@@ -85,6 +85,7 @@ namespace CommandsEditor.ConfigEditors
             this.upgraded_health_increase_percentage = new System.Windows.Forms.NumericUpDown();
             this.label18 = new System.Windows.Forms.Label();
             this.health_increase_percentage = new System.Windows.Forms.NumericUpDown();
+            this.addItemBtn = new System.Windows.Forms.Button();
             this.helpBtn = new System.Windows.Forms.Button();
             this.baseObject.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.radial_menu_order_index)).BeginInit();
@@ -619,6 +620,16 @@ namespace CommandsEditor.ConfigEditors
             this.health_increase_percentage.Size = new System.Drawing.Size(374, 20);
             this.health_increase_percentage.TabIndex = 9;
             // 
+            // addItemBtn
+            // 
+            this.addItemBtn.Location = new System.Drawing.Point(13, 703);
+            this.addItemBtn.Name = "addItemBtn";
+            this.addItemBtn.Size = new System.Drawing.Size(316, 23);
+            this.addItemBtn.TabIndex = 355;
+            this.addItemBtn.Text = "Add New Item";
+            this.addItemBtn.UseVisualStyleBackColor = true;
+            this.addItemBtn.Click += new System.EventHandler(this.addItemBtn_Click);
+            // 
             // helpBtn
             // 
             this.helpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -635,8 +646,9 @@ namespace CommandsEditor.ConfigEditors
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(754, 709);
+            this.ClientSize = new System.Drawing.Size(754, 739);
             this.Controls.Add(this.helpBtn);
+            this.Controls.Add(this.addItemBtn);
             this.Controls.Add(this.medikit);
             this.Controls.Add(this.held);
             this.Controls.Add(this.ammo);
@@ -719,6 +731,7 @@ namespace CommandsEditor.ConfigEditors
         private System.Windows.Forms.NumericUpDown upgraded_health_increase_percentage;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.NumericUpDown health_increase_percentage;
+        private System.Windows.Forms.Button addItemBtn;
         private System.Windows.Forms.Button helpBtn;
     }
 }

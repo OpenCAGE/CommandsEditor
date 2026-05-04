@@ -1,4 +1,4 @@
-using CATHODE;
+﻿using CATHODE;
 using CATHODE.Enums;
 using CATHODE.Scripting;
 using CommandsEditor.Popups.Base;
@@ -17,6 +17,7 @@ namespace CommandsEditor.ConfigEditors
     {
         private readonly BML _gblItem;
         private string _ogName;
+        private readonly string[] _creatableTypes = { "object", "weapon", "ammo", "medikit", "ied", "light" };
 
         public InventoryItemEditor() : base()
         {
@@ -60,7 +61,8 @@ namespace CommandsEditor.ConfigEditors
             listView.EndUpdate();
             target_weapon.EndUpdate();
 
-            listView.Items[0].Selected = true;
+            if (listView.Items.Count > 0)
+                listView.Items[0].Selected = true;
 
             this.FormClosing += InventoryItemEditor_FormClosing;
         }
@@ -186,6 +188,9 @@ namespace CommandsEditor.ConfigEditors
 
         private void Save(object sender, EventArgs e)
         {
+            if (listView.SelectedItems.Count != 1 || listView.SelectedItems[0].Group == null)
+                return;
+
             var doc = _gblItem.Content;
 
             string type = listView.SelectedItems[0].Group.Name;
@@ -209,12 +214,31 @@ namespace CommandsEditor.ConfigEditors
                     composite.Text = "Required_Assets/Pickups/";
 
                 var specialSlots = doc["item_database"]["special_slots"];
+                string oldSpecialSlot = (selectedElement.GetAttribute("special_slot") ?? "").Trim();
+                string newSpecialSlot = (special_slot.Text ?? "").Trim();
+                bool renamedExistingSlot = false;
+                bool newSlotAlreadyExists = false;
+                string slotNodeName = "special_slot";
                 foreach (XmlElement specialSlot in specialSlots)
                 {
-                    if (specialSlot.GetAttribute("name") != selectedElement.GetAttribute("special_slot"))
-                        continue;
-                    specialSlot.SetAttribute("name", special_slot.Text);
-                    break;
+                    slotNodeName = specialSlot.Name;
+
+                    string existingName = (specialSlot.GetAttribute("name") ?? "").Trim();
+                    if (!string.IsNullOrEmpty(newSpecialSlot) && existingName.Equals(newSpecialSlot, StringComparison.OrdinalIgnoreCase))
+                        newSlotAlreadyExists = true;
+
+                    if (!string.IsNullOrEmpty(oldSpecialSlot) && existingName.Equals(oldSpecialSlot, StringComparison.Ordinal))
+                    {
+                        specialSlot.SetAttribute("name", newSpecialSlot);
+                        renamedExistingSlot = true;
+                    }
+                }
+
+                if (!renamedExistingSlot && !string.IsNullOrEmpty(newSpecialSlot) && !newSlotAlreadyExists)
+                {
+                    XmlElement newSpecialSlotElement = doc.CreateElement(slotNodeName);
+                    newSpecialSlotElement.SetAttribute("name", newSpecialSlot);
+                    specialSlots.AppendChild(newSpecialSlotElement);
                 }
 
                 selectedElement.SetAttribute("name", name.Text); 
@@ -291,6 +315,99 @@ namespace CommandsEditor.ConfigEditors
         private void helpBtn_Click(object sender, EventArgs e)
         {
             Process.Start("https://opencage.co.uk/docs/configs/inventory-items");
+        }
+
+        private void addItemBtn_Click(object sender, EventArgs e)
+        {
+            var createResult = ShowCreateItemDialog();
+            if (createResult == null)
+                return;
+
+            string itemName = createResult.Item1;
+            string itemType = createResult.Item2;
+
+            var doc = _gblItem.Content;
+            var objects = doc["item_database"]["objects"];
+
+            XmlElement newElement = doc.CreateElement(itemType);
+            newElement.SetAttribute("name", itemName);
+            newElement.SetAttribute("x", "0");
+            newElement.SetAttribute("y", "1");
+            newElement.SetAttribute("width", "1");
+            newElement.SetAttribute("height", "1");
+            objects.AppendChild(newElement);
+            _gblItem.Content = doc;
+
+            ListViewGroup targetGroup = null;
+            foreach (ListViewGroup group in listView.Groups)
+            {
+                if (group.Name != itemType)
+                    continue;
+                targetGroup = group;
+                break;
+            }
+
+            listView.BeginUpdate();
+            foreach (ListViewItem item in listView.Items)
+            {
+                item.Selected = false;
+            }
+            var listItem = listView.Items.Add(new ListViewItem() { Text = itemName, Group = targetGroup });
+            listItem.Selected = true;
+            listItem.Focused = true;
+            listItem.EnsureVisible();
+            listView.EndUpdate();
+            listView.Focus();
+
+            if (itemType == "weapon")
+                target_weapon.Items.Add(itemName);
+
+            Save(this, EventArgs.Empty);
+        }
+
+        private Tuple<string, string> ShowCreateItemDialog()
+        {
+            using (var dialog = new Form())
+            {
+                dialog.Text = "Create Inventory Item";
+                dialog.ClientSize = new System.Drawing.Size(380, 130);
+                dialog.StartPosition = FormStartPosition.CenterParent;
+                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                dialog.MaximizeBox = false;
+                dialog.MinimizeBox = false;
+
+                var nameLabel = new Label() { Text = "Item Name:", Left = 12, Top = 18, Width = 90 };
+                var nameBox = new TextBox() { Left = 108, Top = 15, Width = 255 };
+                var typeLabel = new Label() { Text = "Item Type:", Left = 12, Top = 50, Width = 90 };
+                var typeBox = new ComboBox() { Left = 108, Top = 47, Width = 255, DropDownStyle = ComboBoxStyle.DropDownList };
+                typeBox.Items.AddRange(_creatableTypes);
+                typeBox.SelectedIndex = 0;
+
+                var createButton = new Button() { Text = "Create", Left = 208, Top = 90, Width = 75, DialogResult = DialogResult.OK };
+                var cancelButton = new Button() { Text = "Cancel", Left = 288, Top = 90, Width = 75, DialogResult = DialogResult.Cancel };
+
+                dialog.Controls.Add(nameLabel);
+                dialog.Controls.Add(nameBox);
+                dialog.Controls.Add(typeLabel);
+                dialog.Controls.Add(typeBox);
+                dialog.Controls.Add(createButton);
+                dialog.Controls.Add(cancelButton);
+                dialog.AcceptButton = createButton;
+                dialog.CancelButton = cancelButton;
+
+                dialog.Shown += (_, __) => nameBox.Focus();
+
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return null;
+
+                if (string.IsNullOrWhiteSpace(nameBox.Text))
+                {
+                    MessageBox.Show(this, "Item name cannot be empty.", "Invalid Item Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return null;
+                }
+
+                return Tuple.Create(nameBox.Text.Trim(), typeBox.SelectedItem?.ToString() ?? "object");
+            }
         }
     }
 }
