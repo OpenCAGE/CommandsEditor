@@ -833,5 +833,39 @@ namespace CommandsEditor
                 Console.WriteLine("Failed to unlock achievement: " + achievement.ToString());
 #endif
         }
+
+        public enum RichPresences
+        {
+            EditingLevel,
+
+            NO_PRESENCE
+        }
+
+        private static RichPresences _currentRP = RichPresences.NO_PRESENCE;
+        private static string _currentAI = "";
+
+        public static void UpdatePresence(RichPresences presence, string additionalInfo = "")
+        {
+#if SHIP_BUILD
+            if (!Singleton.IsSteamworks)
+                return;
+
+            if (presence == _currentRP && additionalInfo == _currentAI)
+                return;
+
+            if (presence == RichPresences.NO_PRESENCE)
+            {
+                SteamFriends.ClearRichPresence();
+                return;
+            }
+
+            if (additionalInfo != "")
+                SteamFriends.SetRichPresence("AdditionalInfo", additionalInfo);
+            SteamFriends.SetRichPresence("steam_display", "#" + presence.ToString());
+
+            _currentRP = presence;
+            _currentAI = additionalInfo;
+#endif
+        }
     }
 }

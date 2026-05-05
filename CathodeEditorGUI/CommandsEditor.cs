@@ -322,6 +322,11 @@ namespace CommandsEditor
             newPresence.State = "Composite: " + EditorUtils.GetCompositeName(composite);
             _discord.SetPresence(newPresence);
             _discord.UpdateStartTime();
+
+            if (_commandsDisplay?.Content?.Level == null)
+                Steam.UpdatePresence(Steam.RichPresences.NO_PRESENCE);
+            else
+                Steam.UpdatePresence(Steam.RichPresences.EditingLevel, _commandsDisplay.Content.Level.Name);
         }
 
         private void OnDirtyChanged(bool dirty) => UpdateTitle();
