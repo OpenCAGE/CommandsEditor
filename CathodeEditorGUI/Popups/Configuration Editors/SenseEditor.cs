@@ -82,6 +82,8 @@ namespace CommandsEditor.ConfigEditors
 
             _selectedCharacter[0].Content = doc;
             _selectedCharacter[0].Save();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
     }
 }

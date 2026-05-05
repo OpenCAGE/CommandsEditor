@@ -96,6 +96,8 @@ namespace CommandsEditor.ConfigEditors
             SetValue(hair, "softening_normal_bias", softening_normal_bias);
             SetValue(hair, "softening_distance_rate", softening_distance_rate);
             File.WriteAllLines(Singleton.PathToAI + "/DATA/HAIR_SHADING_SETTINGS.TXT", hair);
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void SetValue(List<string> config, string name, NumericUpDown updown)

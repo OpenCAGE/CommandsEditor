@@ -59,10 +59,13 @@ namespace CommandsEditor.ConfigEditors
                 soundbanks.Add(permaSoundbanks.Items[i].ToString());
             }
             File.WriteAllLines(Singleton.PathToAI + @"\DATA\LIST_OF_PERMANENT_SOUND_BANKS.TXT", soundbanks);
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/configs/perma-soundbanks");
         }
     }

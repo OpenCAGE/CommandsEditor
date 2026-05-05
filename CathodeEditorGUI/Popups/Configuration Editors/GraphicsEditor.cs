@@ -359,6 +359,8 @@ namespace CommandsEditor.ConfigEditors
             //Save all to XML
             _xml.Save(_path);
 
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
+
             //Done
             MessageBox.Show("Saved new graphics settings.");
             MessageBox.Show("You may need to delete your game's settings file to avoid crashes." + Environment.NewLine + "The game can't load settings that don't exist anymore!", "Warning...", MessageBoxButtons.OK, MessageBoxIcon.Information);

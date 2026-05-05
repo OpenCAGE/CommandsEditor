@@ -85,6 +85,8 @@ namespace CommandsEditor.ConfigEditors
 
             _gblItem.Content = doc;
             _gblItem.Save();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void addMovie_Click(object sender, EventArgs e)
@@ -134,6 +136,7 @@ namespace CommandsEditor.ConfigEditors
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/configs/loadscreen-movies");
         }
     }

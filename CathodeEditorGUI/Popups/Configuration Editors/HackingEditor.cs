@@ -125,6 +125,8 @@ namespace CommandsEditor.ConfigEditors
 
             _gblItem.Content = doc;
             _gblItem.Save();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void CreateMaxDifficulty(XmlDocument doc, string toolLvl, string maxDiff, XmlElement parent)
@@ -137,6 +139,7 @@ namespace CommandsEditor.ConfigEditors
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/configs/hack-tool-difficulties");
         }
     }

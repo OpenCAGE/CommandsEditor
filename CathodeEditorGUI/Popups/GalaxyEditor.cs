@@ -195,7 +195,10 @@ namespace CommandsEditor.Popups
             Content.Level.GalaxyDefinition.StarCount = (int)numericUpDown1.Value;
             
             if (Content.Level.GalaxyItems.Generate(Content.Level.GalaxyDefinition))
+            {
+                Steam.UnlockAchievement(Steam.Achievements.GALAXY_MODIFIED);
                 MessageBox.Show("Successfully regenerated galaxy!", "Galaxy Generated", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }

@@ -225,6 +225,8 @@ namespace CommandsEditor.ConfigEditors
 
             _selectedDifficulty[0].Content = doc;
             _selectedDifficulty[0].Save();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void SaveSenseConfig(object sender, EventArgs e)
@@ -243,6 +245,8 @@ namespace CommandsEditor.ConfigEditors
 
             _selectedDifficulty[0].Content = doc;
             _selectedDifficulty[0].Save();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void SaveAttributeConfig(object sender, EventArgs e)
@@ -259,6 +263,8 @@ namespace CommandsEditor.ConfigEditors
 
             _selectedDifficulty[0].Content = doc;
             _selectedDifficulty[0].Save();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void SaveViewconeConfig(object sender, EventArgs e)
@@ -274,10 +280,13 @@ namespace CommandsEditor.ConfigEditors
 
             _selectedDifficulty[0].Content = doc;
             _selectedDifficulty[0].Save();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/configs/difficulty-settings");
         }
     }

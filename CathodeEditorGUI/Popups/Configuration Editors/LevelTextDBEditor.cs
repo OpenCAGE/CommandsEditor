@@ -84,6 +84,8 @@ namespace CommandsEditor.ConfigEditors
         {
             WriteLevelTextDatabasesXML();
             WriteLocalTextDBs();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void ReadLevelTextDatabasesXML()

@@ -254,6 +254,8 @@ namespace CommandsEditor
                 Process.Start("https://opencage.co.uk/docs/cathode-entities/#" + FunctionType.ProxyInterface.ToString());
             else
                 Process.Start("https://opencage.co.uk/docs/cathode-entities/#entities");
+
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
         }
 
         AddCustomParameter _customParam = null;

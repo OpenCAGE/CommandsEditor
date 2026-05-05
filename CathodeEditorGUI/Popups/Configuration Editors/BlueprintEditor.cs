@@ -130,6 +130,8 @@ namespace CommandsEditor.ConfigEditors
 
             _gblItem.Content = doc;
             _gblItem.Save();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void AddRecipeParts(XmlDocument doc, string itemType, List<Tuple<string, string>> items, XmlElement parent)
@@ -147,6 +149,7 @@ namespace CommandsEditor.ConfigEditors
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/configs/blueprint-recipes");
         }
     }

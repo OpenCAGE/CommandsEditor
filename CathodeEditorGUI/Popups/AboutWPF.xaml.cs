@@ -55,6 +55,7 @@ namespace CommandsEditor.Popups
         }
         private void DocsButtonClick(object sender, RoutedEventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/");
         }
         private void DiscordButtonClick(object sender, RoutedEventArgs e)

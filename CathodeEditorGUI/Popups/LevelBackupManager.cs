@@ -70,6 +70,7 @@ namespace CommandsEditor
             RefreshList();
             this.Cursor = Cursors.Default;
 
+            Steam.UnlockAchievement(Steam.Achievements.BACKUP_CREATED);
             MessageBox.Show("Backup successfully created!", "Backup created", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -155,6 +156,8 @@ namespace CommandsEditor
             level = new AlienLevel(levelList.SelectedItem.ToString());
             RefreshList();
             this.Cursor = Cursors.Default;
+
+            Steam.UnlockAchievement(Steam.Achievements.BACKUP_CREATED);
         }
 
         private bool IsLevelActivelyBeingEdited(string levelName = "")

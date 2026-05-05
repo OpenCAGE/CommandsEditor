@@ -4,6 +4,7 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using OpenCAGE;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -797,6 +798,40 @@ namespace CommandsEditor
             Type enumType = typeof(TEnum);
             FieldInfo[] fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
             return fields.OrderBy(f => f.MetadataToken).Select(f => f.Name);
+        }
+    }
+
+    public static class Steam
+    {
+        public enum Achievements 
+        {
+            FIRST_LOAD, // User has loaded a level for the first time
+            FIRST_SAVE, // User has performed their first save of a level
+            ONE_HUNDRED_SAVES, // User has saved 100 times
+            CREATE_A_NEW_ENTITY, // User has created a new entity for the first time
+            ONE_HUNDRED_ENTITIES, // User has created 100 new entities
+            LAUNCHED_GAME, // User has launched in to the game
+            BACKUP_CREATED, // User has made their first backup
+            DOCUMENTATION_CHECKED, // User has visited the documentation
+            CONFIG_MODIFIED, // User has modified a config file
+            BEHAVIOUR_TREE_TOOL_LAUNCHED, // User has launched the behaviour tree tool
+            ASSETS_MODIFIED, // User has modified some assets
+            LEVEL_VIEWER_LAUNCHED, // User has launched the level viewer for the first time
+            GALAXY_MODIFIED, // User has modified the galaxy config
+        }
+
+        public static void UnlockAchievement(Achievements achievement)
+        {
+#if SHIP_BUILD
+            if (!Singleton.IsSteamworks)
+                return;
+
+            bool result = SteamUserStats.SetAchievement(achievement.ToString());
+            if (result)
+                SteamUserStats.StoreStats();
+            else
+                Console.WriteLine("Failed to unlock achievement: " + achievement.ToString());
+#endif
         }
     }
 }

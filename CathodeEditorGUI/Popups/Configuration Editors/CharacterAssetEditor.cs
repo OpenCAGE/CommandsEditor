@@ -224,6 +224,7 @@ namespace CommandsEditor.ConfigEditors
         private void saveBtn_Click(object sender, EventArgs e)
         {
             _assetData.Save();
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
             this.Close();
         }
     }

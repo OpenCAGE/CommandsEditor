@@ -50,10 +50,13 @@ namespace CommandsEditor.ConfigEditors
                 "gRadiositySpecularGlossScale=" + gRadiositySpecularGlossScale.Text + Environment.NewLine +
                 "gDeferredEmissiveSurfaceScale=1.487500" + Environment.NewLine +
                 "gDeferredEmissiveSurfaceExponent=0.563500");
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/configs/radiosity");
         }
     }

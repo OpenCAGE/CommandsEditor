@@ -152,6 +152,8 @@ namespace CommandsEditor
             public readonly string GameRoot = "PATH_GameRoot";
             public readonly string UseStagingBranch = "CONFIG_UseStagingBranch";
             public readonly string SkipUpdate = "CONFIG_SkipUpdateCheck";
+            public readonly string SaveCounter = "CS_SaveCounter";
+            public readonly string EntityCounter = "CS_EntityCounter";
         }
 
         public static Action OnAnimationsLoaded;

@@ -136,6 +136,9 @@ namespace CommandsEditor
             FormClosing += CommandsEditor_FormClosing;
             SetupOptions();
 
+            Singleton.OnEntityAdded += OnEntityAdded;
+            Singleton.OnResourceModified += OnResourceModified;
+
             //Fixes for dodgy top dropdowns
             compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
             compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
@@ -257,6 +260,21 @@ namespace CommandsEditor
 
             versionToolStripMenuItem.Text = "Version " + ProductVersion;
             _settingUp = false;
+        }
+
+        private void OnEntityAdded(Entity e)
+        {
+            Steam.UnlockAchievement(Steam.Achievements.CREATE_A_NEW_ENTITY);
+
+            int entCount = SettingsManager.GetInteger(Singleton.Settings.EntityCounter) + 1;
+            SettingsManager.SetInteger(Singleton.Settings.EntityCounter, entCount);
+            if (entCount >= 100)
+                Steam.UnlockAchievement(Steam.Achievements.ONE_HUNDRED_ENTITIES);
+        }
+
+        private void OnResourceModified()
+        {
+            Steam.UnlockAchievement(Steam.Achievements.ASSETS_MODIFIED);
         }
 
         //keep dropdown open if cursor is inside it 
@@ -424,6 +442,8 @@ namespace CommandsEditor
 
             _levelMenuItems[_commandsDisplay.Content.Level.Name].Checked = true;
             UpdateTitle();
+
+            Steam.UnlockAchievement(Steam.Achievements.FIRST_LOAD);
         }
 
         private void ThreadedLevelLoader()
@@ -557,6 +577,7 @@ namespace CommandsEditor
                     alienProcess.FileName = Singleton.PathToAI + "/AI.exe";
                     Process.Start(alienProcess);
                 }
+                Steam.UnlockAchievement(Steam.Achievements.LAUNCHED_GAME);
             }
 #endif
 
@@ -565,6 +586,13 @@ namespace CommandsEditor
             CloseProgressUI();
 
             Singleton.OnSaved?.Invoke();
+            Steam.UnlockAchievement(Steam.Achievements.FIRST_SAVE);
+
+            int saveCount = SettingsManager.GetInteger(Singleton.Settings.SaveCounter) + 1;
+            SettingsManager.SetInteger(Singleton.Settings.SaveCounter, saveCount);
+            if (saveCount >= 100)
+                Steam.UnlockAchievement(Steam.Achievements.ONE_HUNDRED_SAVES);
+
             //if (saved)
             //{
                 if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt) && successMsg)
@@ -608,6 +636,8 @@ namespace CommandsEditor
             }; 
             LevelViewerSetup.UnityProcess.Exited += UnityProcess_Exited;
             LevelViewerSetup.UnityProcess.Start();
+
+            Steam.UnlockAchievement(Steam.Achievements.LEVEL_VIEWER_LAUNCHED);
 
             openLevelViewerToolStripMenuItem.Enabled = false;
         }
@@ -802,6 +832,7 @@ namespace CommandsEditor
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/");
         }
 
@@ -1059,6 +1090,8 @@ namespace CommandsEditor
                     WorkingDirectory = editorPath,
                 }
             );
+
+            Steam.UnlockAchievement(Steam.Achievements.BEHAVIOUR_TREE_TOOL_LAUNCHED);
         }
 
         private void KillBehaviourTreeEditor()
@@ -1528,6 +1561,7 @@ namespace CommandsEditor
 
         private void documentationToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/");
         }
 

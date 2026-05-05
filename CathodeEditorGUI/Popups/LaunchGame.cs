@@ -83,6 +83,7 @@ namespace CommandsEditor
                 alienProcess.FileName = Singleton.PathToAI + "/AI.exe";
                 Process.Start(alienProcess);
             }
+            Steam.UnlockAchievement(Steam.Achievements.LAUNCHED_GAME);
             return true;
         }
 

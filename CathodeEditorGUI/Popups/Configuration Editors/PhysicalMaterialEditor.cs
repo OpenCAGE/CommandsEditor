@@ -83,10 +83,13 @@ namespace CommandsEditor.ConfigEditors
 
             _materialTypes.Content = doc;
             _materialTypes.Save();
+
+            Steam.UnlockAchievement(Steam.Achievements.CONFIG_MODIFIED);
         }
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/configs/physical-materials");
         }
     }
