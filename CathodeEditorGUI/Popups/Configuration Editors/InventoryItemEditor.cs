@@ -176,17 +176,17 @@ namespace CommandsEditor.ConfigEditors
                 radial_menu_order_index.Text = selectedElement.GetAttribute("radial_menu_order_index");
             crafting_resource.Checked = selectedElement.GetAttribute("crafting_resource") == "true";
             if (selectedElement.GetAttribute("composite") == "")
-                composite.Text = "Required_Assets/Pickups/" + name.Text;
+                composite.Text = "Required_Assets\\Pickups\\" + name.Text;
             else
-                composite.Text = "Required_Assets/Pickups/" + selectedElement.GetAttribute("composite");
+                composite.Text = "Required_Assets\\Pickups\\" + selectedElement.GetAttribute("composite");
             special_slot.Text = selectedElement.GetAttribute("special_slot");
             ConfigEditorUtils.Subscribe(baseObject.Controls, Save);
         }
         private void SetHeldInfo(XmlElement selectedElement)
         {
             held.Visible = true;
-            held_object_name.Text = "Required_Assets/Archetypes/Equipment/" + selectedElement.GetAttribute("held_object_name");
-            thrown_object_name.Text = "Required_Assets/Thrown/" + selectedElement.GetAttribute("thrown_object_name");
+            held_object_name.Text = "Required_Assets\\Archetypes\\Equipment\\" + selectedElement.GetAttribute("held_object_name");
+            thrown_object_name.Text = "Required_Assets\\Thrown\\" + selectedElement.GetAttribute("thrown_object_name");
             droppable_when_held.Checked = selectedElement.GetAttribute("droppable_when_held") == "true";
             drop_when_consume.Checked = selectedElement.GetAttribute("drop_when_consume") == "true";
             consume_when.Text = selectedElement.GetAttribute("consume_when");
@@ -224,8 +224,8 @@ namespace CommandsEditor.ConfigEditors
 
             if (baseObject.Visible)
             {
-                if (!composite.Text.StartsWith("Required_Assets/Pickups/"))
-                    composite.Text = "Required_Assets/Pickups/";
+                if (!composite.Text.StartsWith("Required_Assets\\Pickups\\"))
+                    composite.Text = "Required_Assets\\Pickups\\";
 
                 var specialSlots = doc["item_database"]["special_slots"];
                 string oldSpecialSlot = (selectedElement.GetAttribute("special_slot") ?? "").Trim();
@@ -264,7 +264,7 @@ namespace CommandsEditor.ConfigEditors
                 selectedElement.SetAttribute("display_quantity", display_quantity.Checked.ToString().ToLower());
                 selectedElement.SetAttribute("radial_menu_order_index", radial_menu_order_index.Text);
                 selectedElement.SetAttribute("crafting_resource", crafting_resource.Checked.ToString().ToLower());
-                selectedElement.SetAttribute("composite", composite.Text.Substring(("Required_Assets/Pickups/").Length));
+                selectedElement.SetAttribute("composite", composite.Text.Substring(("Required_Assets\\").Length));
                 selectedElement.SetAttribute("special_slot", special_slot.Text);
             }
             if (weapon.Visible)
@@ -278,13 +278,19 @@ namespace CommandsEditor.ConfigEditors
             }
             if (held.Visible)
             {
-                if (!held_object_name.Text.StartsWith("Required_Assets/Archetypes/Equipment/"))
-                    held_object_name.Text = "Required_Assets/Archetypes/Equipment/";
-                if (!thrown_object_name.Text.StartsWith("Required_Assets/Thrown/"))
-                    thrown_object_name.Text = "Required_Assets/Thrown/";
+                if (!held_object_name.Text.StartsWith("Required_Assets\\Archetypes\\Equipment\\"))
+                    held_object_name.Text = "Required_Assets\\Archetypes\\Equipment\\";
+                if (!thrown_object_name.Text.StartsWith("Required_Assets\\Thrown\\"))
+                    thrown_object_name.Text = "Required_Assets\\Thrown\\";
 
-                selectedElement.SetAttribute("held_object_name", held_object_name.Text.Substring(("Required_Assets/Archetypes/Equipment/").Length));
-                selectedElement.SetAttribute("thrown_object_name", thrown_object_name.Text.Substring(("Required_Assets/Thrown/").Length));
+                if (held_object_name.Text != "Required_Assets\\Archetypes\\Equipment\\")
+                    selectedElement.SetAttribute("held_object_name", held_object_name.Text.Substring(("Required_Assets\\Archetypes\\").Length));
+                else
+                    selectedElement.RemoveAttribute("thrown_object_name");
+                if (thrown_object_name.Text != "Required_Assets\\Thrown\\")
+                    selectedElement.SetAttribute("thrown_object_name", thrown_object_name.Text.Substring(("Required_Assets\\").Length));
+                else
+                    selectedElement.RemoveAttribute("thrown_object_name");
                 selectedElement.SetAttribute("droppable_when_held", droppable_when_held.Checked.ToString().ToLower());
                 selectedElement.SetAttribute("drop_when_consume", drop_when_consume.Checked.ToString().ToLower());
                 selectedElement.SetAttribute("consume_when", consume_when.Text);
