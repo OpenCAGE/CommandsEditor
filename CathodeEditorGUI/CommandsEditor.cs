@@ -114,7 +114,6 @@ namespace CommandsEditor
             localisationToolStripMenuItem.Visible = false;
             levelTextDBsToolStripMenuItem.Visible = false;
             fontConfigToolStripMenuItem.Visible = false;
-            aboutToolStripMenuItem.Visible = false;
 #endif
 
             //Launch game is only supported by certain platforms due to having to patch the binary
@@ -210,7 +209,14 @@ namespace CommandsEditor
             if (!SettingsManager.IsSet(Singleton.Settings.AskBeforeDeletingNode)) SettingsManager.SetBool(Singleton.Settings.AskBeforeDeletingNode, true);
             showConfirmationWhenDeletingNodeToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.AskBeforeDeletingNode); showConfirmationWhenDeletingNodeToolStripMenuItem.PerformClick();
 
-            useStagingBranchToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseStagingBranch); useStagingBranchToolStripMenuItem.PerformClick();
+#if SHIP_BUILD
+            if (!Singleton.IsOfflineMode)
+                useStagingBranchToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseStagingBranch); useStagingBranchToolStripMenuItem.PerformClick();
+            else
+                useStagingBranchToolStripMenuItem.Visible = false;
+#else
+            useStagingBranchToolStripMenuItem.Visible = false;
+#endif
 
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionNode))
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_FunctionNode, Color.FromArgb(30, 144, 255).ToArgb());
@@ -299,7 +305,7 @@ namespace CommandsEditor
         private void OnDirtyChanged(bool dirty) => UpdateTitle();
         private void UpdateTitle()
         {
-            string title = "OpenCAGE Commands Editor";
+            string title = "OpenCAGE";
             if (SettingsManager.GetBool(Singleton.Settings.ShowGamePlatform))
             {
                 switch (Singleton.Platform)
@@ -1523,9 +1529,9 @@ namespace CommandsEditor
 
         private void useStagingBranchToolStripMenuItem_Click(object sender, EventArgs e)
         {
+#if SHIP_BUILD
             useStagingBranchToolStripMenuItem.Checked = !useStagingBranchToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.UseStagingBranch, useStagingBranchToolStripMenuItem.Checked);
-#if SHIP_BUILD
             if (!_settingUp)
                 UpdateManager.DoUpdate();
 #endif

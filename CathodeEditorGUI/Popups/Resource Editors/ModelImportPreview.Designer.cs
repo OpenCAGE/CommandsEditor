@@ -94,7 +94,7 @@ namespace AlienPAK
             this.Controls.Add(this.hierarchyTree);
             this.Controls.Add(this.panelButtons);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MinimumSize = new System.Drawing.Size(600, 400);
             this.Name = "ModelImportPreview";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

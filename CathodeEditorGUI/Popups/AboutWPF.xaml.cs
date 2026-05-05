@@ -26,6 +26,14 @@ namespace CommandsEditor.Popups
         {
             InitializeComponent();
 
+            if (SettingsManager.GetString(Singleton.Settings.RemoteBranch) == "")
+            {
+                if (SettingsManager.GetBool(Singleton.Settings.UseStagingBranch))
+                    SettingsManager.SetString(Singleton.Settings.RemoteBranch, "staging");
+                else
+                    SettingsManager.SetString(Singleton.Settings.RemoteBranch, "master");
+            }
+
             string branchText = ((Singleton.IsOfflineMode) ? Singleton.Platform.ToString() : SettingsManager.GetString(Singleton.Settings.RemoteBranch));
             try
             {
