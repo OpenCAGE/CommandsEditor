@@ -211,9 +211,13 @@ namespace CommandsEditor
 
 #if SHIP_BUILD
             if (!Singleton.IsOfflineMode)
+            {
                 useStagingBranchToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseStagingBranch); useStagingBranchToolStripMenuItem.PerformClick();
+            }
             else
+            {
                 useStagingBranchToolStripMenuItem.Visible = false;
+            }
 #else
             useStagingBranchToolStripMenuItem.Visible = false;
 #endif
