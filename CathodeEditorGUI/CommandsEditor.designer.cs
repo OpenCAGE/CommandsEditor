@@ -116,6 +116,7 @@ namespace CommandsEditor
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
+            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -541,7 +542,7 @@ namespace CommandsEditor
             this.autoHideExplorerViewToolStripMenuItem,
             this.searchOnlyCompositeNames});
             this.compositeViewerToolStripMenuItem.Name = "compositeViewerToolStripMenuItem";
-            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.compositeViewerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.compositeViewerToolStripMenuItem.Text = "Composite Display";
             // 
             // showExplorerViewToolStripMenuItem
@@ -579,7 +580,7 @@ namespace CommandsEditor
             this.showConfirmationWhenDeletingNodeToolStripMenuItem,
             this.giveOptionToDeleteEntityWhenNoNodesToolStripMenuItem});
             this.entityDisplayToolStripMenuItem.Name = "entityDisplayToolStripMenuItem";
-            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.entityDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.entityDisplayToolStripMenuItem.Text = "Entity Display";
             // 
             // showEntityIDs
@@ -632,7 +633,7 @@ namespace CommandsEditor
             this.showGamePlatformToolStripMenuItem,
             this.writeCompressedToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
-            this.miscToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.miscToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.miscToolStripMenuItem.Text = "Misc";
             this.miscToolStripMenuItem.Click += new System.EventHandler(this.miscToolStripMenuItem_Click);
             // 
@@ -710,14 +711,14 @@ namespace CommandsEditor
             // controlsToolStripMenuItem
             // 
             this.controlsToolStripMenuItem.Name = "controlsToolStripMenuItem";
-            this.controlsToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.controlsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.controlsToolStripMenuItem.Text = "Controls";
             this.controlsToolStripMenuItem.Click += new System.EventHandler(this.controlsToolStripMenuItem_Click);
             // 
             // useStagingBranchToolStripMenuItem
             // 
             this.useStagingBranchToolStripMenuItem.Name = "useStagingBranchToolStripMenuItem";
-            this.useStagingBranchToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.useStagingBranchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.useStagingBranchToolStripMenuItem.Text = "Use Staging Branch";
             this.useStagingBranchToolStripMenuItem.Click += new System.EventHandler(this.useStagingBranchToolStripMenuItem_Click);
             // 
@@ -739,7 +740,8 @@ namespace CommandsEditor
             this.documentationToolStripMenuItem,
             this.aboutToolStripMenuItem,
             this.toolStripSeparator3,
-            this.versionToolStripMenuItem});
+            this.versionToolStripMenuItem,
+            this.checkForUpdatesToolStripMenuItem});
             this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Name = "toolStripButton4";
@@ -749,27 +751,27 @@ namespace CommandsEditor
             // documentationToolStripMenuItem
             // 
             this.documentationToolStripMenuItem.Name = "documentationToolStripMenuItem";
-            this.documentationToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.documentationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.documentationToolStripMenuItem.Text = "Documentation";
             this.documentationToolStripMenuItem.Click += new System.EventHandler(this.documentationToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(154, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // versionToolStripMenuItem
             // 
             this.versionToolStripMenuItem.Enabled = false;
             this.versionToolStripMenuItem.Name = "versionToolStripMenuItem";
-            this.versionToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.versionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.versionToolStripMenuItem.Text = "Version ";
             // 
             // DEBUG_ReloadLevel
@@ -832,6 +834,13 @@ namespace CommandsEditor
             this.dockPanel.Size = new System.Drawing.Size(1581, 757);
             this.dockPanel.TabIndex = 5;
             this.dockPanel.Theme = this.vS2015BlueTheme1;
+            // 
+            // checkForUpdatesToolStripMenuItem
+            // 
+            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
+            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.checkForUpdatesToolStripMenuItem.Text = "Check for Updates";
+            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesToolStripMenuItem_Click);
             // 
             // CommandsEditor
             // 
@@ -943,5 +952,6 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem controlsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton manageBackupsBtn;
         private System.Windows.Forms.ToolStripMenuItem useStagingBranchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkForUpdatesToolStripMenuItem;
     }
 }

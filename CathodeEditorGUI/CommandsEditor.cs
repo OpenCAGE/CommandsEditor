@@ -220,9 +220,11 @@ namespace CommandsEditor
             else
             {
                 useStagingBranchToolStripMenuItem.Visible = false;
+                checkForUpdatesToolStripMenuItem.Visible = false;
             }
 #else
             useStagingBranchToolStripMenuItem.Visible = false;
+            checkForUpdatesToolStripMenuItem.Visible = false;
 #endif
 
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionNode))
@@ -1575,8 +1577,39 @@ namespace CommandsEditor
 #if SHIP_BUILD
             useStagingBranchToolStripMenuItem.Checked = !useStagingBranchToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.UseStagingBranch, useStagingBranchToolStripMenuItem.Checked);
+            SettingsManager.SetString(Singleton.Settings.RemoteBranch, useStagingBranchToolStripMenuItem.Checked ? "staging" : "master");
             if (!_settingUp)
+            {
+                if (_commandsDisplay?.Content?.Level != null)
+                {
+                    if (MessageBox.Show("Would you like to update now? This will relaunch the app. Make sure you have saved!", "Branch changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                        return;
+                }
                 UpdateManager.DoUpdate();
+            }
+#endif
+        }
+
+        private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+#if SHIP_BUILD
+            if (UpdateManager.IsUpdateAvailable(Singleton.Version))
+            {
+                if (_commandsDisplay?.Content?.Level != null)
+                {
+                    if (MessageBox.Show("A new version of OpenCAGE is available! Would you like to update now? This will relaunch the app. Make sure you have saved!", "Update available", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                        return;
+                }
+                else
+                {
+                    MessageBox.Show("A new version of OpenCAGE is available!", "Update available", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                UpdateManager.DoUpdate();
+            }
+            else
+            {
+                MessageBox.Show("You are currently using version " + Singleton.Version + " which is the latest available on " + SettingsManager.GetString(Singleton.Settings.RemoteBranch, "master") + "!", "No update available", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
 #endif
         }
     }
