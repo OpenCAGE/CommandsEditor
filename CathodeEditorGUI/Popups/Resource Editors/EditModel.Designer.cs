@@ -66,7 +66,7 @@ namespace CommandsEditor
             this.modelRendererHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.modelRendererHost.Location = new System.Drawing.Point(3, 16);
             this.modelRendererHost.Name = "modelRendererHost";
-            this.modelRendererHost.Size = new System.Drawing.Size(475, 610);
+            this.modelRendererHost.Size = new System.Drawing.Size(473, 610);
             this.modelRendererHost.TabIndex = 0;
             this.modelRendererHost.Text = "elementHost1";
             this.modelRendererHost.Child = null;
@@ -129,7 +129,7 @@ namespace CommandsEditor
             this.modelPreviewArea.Controls.Add(this.modelRendererHost);
             this.modelPreviewArea.Location = new System.Drawing.Point(3, 3);
             this.modelPreviewArea.Name = "modelPreviewArea";
-            this.modelPreviewArea.Size = new System.Drawing.Size(481, 629);
+            this.modelPreviewArea.Size = new System.Drawing.Size(479, 629);
             this.modelPreviewArea.TabIndex = 103;
             this.modelPreviewArea.TabStop = false;
             // 
@@ -149,7 +149,7 @@ namespace CommandsEditor
             // 
             this.selectModelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.selectModelBtn.Enabled = false;
-            this.selectModelBtn.Location = new System.Drawing.Point(332, 579);
+            this.selectModelBtn.Location = new System.Drawing.Point(330, 579);
             this.selectModelBtn.Name = "selectModelBtn";
             this.selectModelBtn.Size = new System.Drawing.Size(134, 35);
             this.selectModelBtn.TabIndex = 1;
@@ -195,7 +195,7 @@ namespace CommandsEditor
             this.splitContainer2.Panel2.Controls.Add(this.renderFlagsGroup);
             this.splitContainer2.Panel2.Controls.Add(this.submeshFilterGroup);
             this.splitContainer2.Size = new System.Drawing.Size(701, 632);
-            this.splitContainer2.SplitterDistance = 487;
+            this.splitContainer2.SplitterDistance = 485;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -230,7 +230,7 @@ namespace CommandsEditor
             // 
             // renderFlagsGroup
             // 
-            this.renderFlagsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.renderFlagsGroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.renderFlagsGroup.Controls.Add(this.renderFlagsPanel);
             this.renderFlagsGroup.Location = new System.Drawing.Point(0, 346);
