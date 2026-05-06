@@ -4,10 +4,13 @@ using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CathodeLib.ObjectExtensions;
+using CommandsEditor.ConfigEditors;
 using CommandsEditor.DockPanels;
 using CommandsEditor.Popups;
+using CommandsEditor.Popups.Configuration_Editors;
 using CommandsEditor.Scripts;
 using CommandsEditor.UserControls;
+using DarkModeForms;
 using DiscordRPC;
 using Newtonsoft.Json;
 using OpenCAGE;
@@ -17,6 +20,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -56,22 +60,34 @@ namespace CommandsEditor
         private int _defaultWidth;
         private int _defaultHeight;
 
-        private string _baseTitle = "";
+        private bool _settingUp = true;
+
+        private DarkModeCS _dm;
 
         public CommandsEditor(string level = null)
         {
             //LocalDebug.CheckWriteInstanced();
 
             InitializeComponent();
+#if USE_DARK_MODE
+            _dm = new DarkModeCS(this);
+#endif
 
             Singleton.Editor = this;
             Singleton.LoadGlobals();
+
+            //LocalDebug.GetExclusiveMasters("production/tech_comms");
+            //LocalDebug.GetExclusiveMasters("production/hab_airport");
 
             _discord = new DiscordRpcClient("1152999067207606392");
             _discord.Initialize();
             _discord.SetPresence(new RichPresence() { Assets = new Assets() { LargeImageKey = "icon" } });
 
             Singleton.OnCompositeSelected += OnCompositeSelectedForDiscord;
+
+#if USE_DIRTY_TRACKER
+            DirtyTracker.OnChanged += OnDirtyChanged;
+#endif
 
             if (SettingsManager.GetFloat(Singleton.Settings.NumericStep, -1.0f) == -1.0f)
                 SettingsManager.SetFloat(Singleton.Settings.NumericStep, 0.1f);
@@ -87,19 +103,73 @@ namespace CommandsEditor
             _defaultHeight = Height;
 
 #if !DEBUG
+            //Dev options
             DEBUG_ReloadLevel.Visible = false;
             connectToRuntimeUtils.Visible = false;
+            
+            //WIP forms
+            inputsToolStripMenuItem.Visible = false;
+            scriptReadableVariablesToolStripMenuItem.Visible = false;
+            voiceMappingsToolStripMenuItem.Visible = false;
+            localisationToolStripMenuItem.Visible = false;
+            levelTextDBsToolStripMenuItem.Visible = false;
+            fontConfigToolStripMenuItem.Visible = false;
 #endif
+
+            //Launch game is only supported by certain platforms due to having to patch the binary
+            switch (Singleton.Platform)
+            {
+                case PatchManager.Platform.STEAM:
+                case PatchManager.Platform.EPIC_GAMES_STORE:
+                case PatchManager.Platform.GOG:
+                    launchGameBtn.Visible = true;
+                    break;
+                default:
+                    launchGameBtn.Visible = false;
+                    break;
+            }
 
             WindowState = SettingsManager.GetString(Singleton.Settings.WindowState, "Normal") == "Maximized" ? FormWindowState.Maximized : FormWindowState.Normal;
             Width = SettingsManager.GetInteger(Singleton.Settings.WindowWidth, _defaultWidth);
             Height = SettingsManager.GetInteger(Singleton.Settings.WindowHeight, _defaultHeight);
             Resize += CommandsEditor_Resize;
             FormClosing += CommandsEditor_FormClosing;
+            SetupOptions();
 
+            Singleton.OnEntityAdded += OnEntityAdded;
+            Singleton.OnResourceModified += OnResourceModified;
+
+            //Fixes for dodgy top dropdowns
+            compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            entityDisplayToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            entityDisplayToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            miscToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
+            miscToolStripMenuItem.DropDown.Closing += DropDown_Closing;
+            toolStripButton2.DropDown.Closing += DropDown_Closing;
+
+            //Populate level list
+            List<string> levels = Level.GetLevels(Singleton.PathToAI);
+            for (int i = 0; i < levels.Count; i++)
+            {
+                ToolStripMenuItem levelItem = new ToolStripMenuItem(levels[i]);
+                levelItem.Click += OnLevelSelected;
+                loadLevel.DropDownItems.Add(levelItem);
+                _levelMenuItems.Add(levels[i], levelItem);
+            }
+
+            //If we have been launched to a level, load that
+            if (level != null)
+                OnLevelSelected(level);
+            else
+                loadLevel_Click(null, null);
+        }
+
+        private void SetupOptions()
+        {
             if (!SettingsManager.IsSet(Singleton.Settings.ServerOpt)) SettingsManager.SetBool(Singleton.Settings.ServerOpt, true);
             connectToUnity.Checked = !SettingsManager.GetBool(Singleton.Settings.ServerOpt); connectToUnity.PerformClick();
-            
+
             if (!SettingsManager.IsSet(Singleton.Settings.RuntimeUtilsOpt)) SettingsManager.SetBool(Singleton.Settings.RuntimeUtilsOpt, false);
             connectToRuntimeUtils.Checked = SettingsManager.GetBool(Singleton.Settings.RuntimeUtilsOpt);
             if (connectToRuntimeUtils.Checked)
@@ -119,6 +189,7 @@ namespace CommandsEditor
             keepFunctionUsesWindowOpenToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.KeepUsesWindowOpen); keepFunctionUsesWindowOpenToolStripMenuItem.PerformClick();
             writeInstancedResourcesExperimentalToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.CompileInstances); writeInstancedResourcesExperimentalToolStripMenuItem.PerformClick();
             openGameOnSaveToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved); openGameOnSaveToolStripMenuItem.PerformClick();
+            showGamePlatformToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowGamePlatform); showGamePlatformToolStripMenuItem.PerformClick();
 
             if (!SettingsManager.IsSet(Singleton.Settings.ShowSavedMsgOpt)) SettingsManager.SetBool(Singleton.Settings.ShowSavedMsgOpt, true);
             showConfirmationWhenSavingToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt); showConfirmationWhenSavingToolStripMenuItem.PerformClick();
@@ -140,6 +211,21 @@ namespace CommandsEditor
 
             if (!SettingsManager.IsSet(Singleton.Settings.AskBeforeDeletingNode)) SettingsManager.SetBool(Singleton.Settings.AskBeforeDeletingNode, true);
             showConfirmationWhenDeletingNodeToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.AskBeforeDeletingNode); showConfirmationWhenDeletingNodeToolStripMenuItem.PerformClick();
+
+#if SHIP_BUILD
+            if (!Singleton.IsOfflineMode)
+            {
+                useStagingBranchToolStripMenuItem.Checked = !SettingsManager.GetBool(Singleton.Settings.UseStagingBranch); useStagingBranchToolStripMenuItem.PerformClick();
+            }
+            else
+            {
+                useStagingBranchToolStripMenuItem.Visible = false;
+                checkForUpdatesToolStripMenuItem.Visible = false;
+            }
+#else
+            useStagingBranchToolStripMenuItem.Visible = false;
+            checkForUpdatesToolStripMenuItem.Visible = false;
+#endif
 
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_FunctionNode))
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_FunctionNode, Color.FromArgb(30, 144, 255).ToArgb());
@@ -174,49 +260,23 @@ namespace CommandsEditor
             if (!SettingsManager.IsSet(Singleton.Settings.NodeColour_VariableText))
                 SettingsManager.SetInteger(Singleton.Settings.NodeColour_VariableText, Color.White.ToArgb());
 
-            //Fixes for dodgy top dropdowns
-            compositeViewerToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
-            compositeViewerToolStripMenuItem.DropDown.Closing += DropDown_Closing;
-            entityDisplayToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
-            entityDisplayToolStripMenuItem.DropDown.Closing += DropDown_Closing;
-            miscToolStripMenuItem.MouseHover += (sender, e) => { ((ToolStripMenuItem)sender).PerformClick(); };
-            miscToolStripMenuItem.DropDown.Closing += DropDown_Closing;
-            toolStripButton2.DropDown.Closing += DropDown_Closing;
+            versionToolStripMenuItem.Text = "Version " + ProductVersion;
+            _settingUp = false;
+        }
 
-            //Set title
-            _baseTitle = "OpenCAGE Commands Editor";
-            if (OpenCAGE.SettingsManager.GetBool("CONFIG_ShowPlatform") &&
-                OpenCAGE.SettingsManager.GetString("META_GameVersion") != "")
-            {
-                switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
-                {
-                    case "STEAM":
-                        _baseTitle += " - Steam";
-                        break;
-                    case "EPIC_GAMES_STORE":
-                        _baseTitle += " - Epic Games Store";
-                        break;
-                    case "GOG":
-                        _baseTitle += " - GoG";
-                        break;
-                }
-            }
-            DirtyTracker.OnChanged += OnDirtyChanged;
-            UpdateTitle();
+        private void OnEntityAdded(Entity e)
+        {
+            Steam.UnlockAchievement(Steam.Achievements.CREATE_A_NEW_ENTITY);
 
-            //Populate level list
-            List<string> levels = Level.GetLevels(SharedData.pathToAI);
-            for (int i = 0; i < levels.Count; i++)
-            {
-                ToolStripMenuItem levelItem = new ToolStripMenuItem(levels[i]);
-                levelItem.Click += OnLevelSelected;
-                loadLevel.DropDownItems.Add(levelItem);
-                _levelMenuItems.Add(levels[i], levelItem);
-            }
+            int entCount = SettingsManager.GetInteger(Singleton.Settings.EntityCounter) + 1;
+            SettingsManager.SetInteger(Singleton.Settings.EntityCounter, entCount);
+            if (entCount >= 100)
+                Steam.UnlockAchievement(Steam.Achievements.ONE_HUNDRED_ENTITIES);
+        }
 
-            //If we have been launched to a level, load that
-            if (level != null)
-                OnLevelSelected(level);
+        private void OnResourceModified()
+        {
+            Steam.UnlockAchievement(Steam.Achievements.ASSETS_MODIFIED);
         }
 
         //keep dropdown open if cursor is inside it 
@@ -235,6 +295,7 @@ namespace CommandsEditor
 
         private void CommandsEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
+            KillBehaviourTreeEditor();
             KillLevelViewer();
             SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainBottom, (float)dockPanel.DockBottomPortion);
             SettingsManager.SetFloat(Singleton.Settings.SplitWidthMainRight, (float)dockPanel.DockRightPortion);
@@ -263,25 +324,67 @@ namespace CommandsEditor
             newPresence.State = "Composite: " + EditorUtils.GetCompositeName(composite);
             _discord.SetPresence(newPresence);
             _discord.UpdateStartTime();
+
+            if (_commandsDisplay?.Content?.Level == null)
+                Steam.UpdatePresence(Steam.RichPresences.NO_PRESENCE);
+            else
+                Steam.UpdatePresence(Steam.RichPresences.EditingLevel, _commandsDisplay.Content.Level.Name);
         }
 
         private void OnDirtyChanged(bool dirty) => UpdateTitle();
         private void UpdateTitle()
         {
+            string title = "OpenCAGE";
+            if (SettingsManager.GetBool(Singleton.Settings.ShowGamePlatform))
+            {
+                switch (Singleton.Platform)
+                {
+                    case PatchManager.Platform.STEAM:
+                        title += " - Steam";
+                        break;
+                    case PatchManager.Platform.EPIC_GAMES_STORE:
+                        title += " - Epic Games Store";
+                        break;
+                    case PatchManager.Platform.GOG:
+                        title += " - GoG";
+                        break;
+                    case PatchManager.Platform.WINDOWS_STORE:
+                        title += " - Windows Store";
+                        break;
+                    case PatchManager.Platform.SWITCH:
+                        title += " - Nintendo Switch";
+                        break;
+                    case PatchManager.Platform.IOS_ANDROID:
+                        title += " - Mobile";
+                        break;
+                    case PatchManager.Platform.MAC_LINUX:
+                        title += " - Mac/Linux";
+                        break;
+                    default:
+                        title += " - Unknown Platform";
+                        break;
+                }
+            }
+
             if (_commandsDisplay == null)
             {
-                this.Text = _baseTitle;
+                this.Text = title;
             }
             else
             {
                 string[] levelBits = _commandsDisplay.Content.Level.Name.Split('/');
-                this.Text = _baseTitle + " - " + levelBits[levelBits.Length - 1] + " (" + _commandsDisplay.Content.Level.Name.Substring(0, _commandsDisplay.Content.Level.Name.Length - levelBits[levelBits.Length - 1].Length).TrimEnd('/') + ")";
+                this.Text = title + " - " + levelBits[levelBits.Length - 1] + " (" + _commandsDisplay.Content.Level.Name.Substring(0, _commandsDisplay.Content.Level.Name.Length - levelBits[levelBits.Length - 1].Length).TrimEnd('/') + ")";
             }
 
 #if USE_DIRTY_TRACKER
             if (DirtyTracker.IsDirty)
                 this.Text += " [UNSAVED CHANGES]";
 #endif
+        }
+
+        public void LoadLevel(string level)
+        {
+            OnLevelSelected(level);
         }
 
         private void loadLevel_Click(object sender, EventArgs e)
@@ -293,9 +396,6 @@ namespace CommandsEditor
                 _levelSelect.FormClosed += OnLevelSelectClosed;
                 _levelSelect.OnLevelSelected += OnLevelSelected;
             }
-
-            _levelSelect.BringToFront();
-            _levelSelect.Focus();
         }
         private void OnLevelSelectClosed(object sender, FormClosedEventArgs e)
         {
@@ -327,11 +427,11 @@ namespace CommandsEditor
             }
 
 #if DEBUG
-            if (Directory.Exists(SharedData.pathToAI + "\\LatestBuiltData\\ENV"))
-            {
-                Directory.Delete(SharedData.pathToAI + "\\DATA\\ENV\\" + level, true);
-                CopyFilesRecursively(SharedData.pathToAI + "\\LatestBuiltData\\ENV\\" + level, SharedData.pathToAI + "\\DATA\\ENV\\" + level);
-            }
+            //if (Directory.Exists(Singleton.PathToAI + "\\LatestBuiltData\\ENV"))
+            //{
+            //    Directory.Delete(Singleton.PathToAI + "\\DATA\\ENV\\" + level, true);
+            //    CopyFilesRecursively(Singleton.PathToAI + "\\LatestBuiltData\\ENV\\" + level, Singleton.PathToAI + "\\DATA\\ENV\\" + level);
+            //}
 #endif
 
             _commandsDisplay = new CommandsDisplay(level);
@@ -349,6 +449,8 @@ namespace CommandsEditor
 
             _levelMenuItems[_commandsDisplay.Content.Level.Name].Checked = true;
             UpdateTitle();
+
+            Steam.UnlockAchievement(Steam.Achievements.FIRST_LOAD);
         }
 
         private void ThreadedLevelLoader()
@@ -413,19 +515,15 @@ namespace CommandsEditor
 
         private void saveLevel_Click(object sender, EventArgs e)
         {
+            SaveLevel();
+        }
+
+        public void SaveLevel(bool successMsg = true)
+        {
             if (_commandsDisplay == null) return;
 
             //Close alien down if it's open, it conflicts with our write locks!
-            List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
-            for (int x = 0; x < allProcesses.Count; x++)
-            {
-                try
-                {
-                    allProcesses[x].Kill();
-                    allProcesses[x].WaitForExit();
-                }
-                catch { }
-            }
+            EditorUtils.CloseAI();
 
             Cursor.Current = Cursors.WaitCursor;
             statusText.Text = "Saving...";
@@ -451,9 +549,9 @@ namespace CommandsEditor
 #endif
 
             //TODO: take a backup first
-            _commandsDisplay.Content.Level.Save();
+            _commandsDisplay.Content.Save();
 
-            if (SettingsManager.GetBool(Singleton.Settings.SavePakAndBin))
+            if (!_commandsDisplay.Content.Level.Commands.Compressed && SettingsManager.GetBool(Singleton.Settings.SavePakAndBin))
             {
                 string ext = "BIN";
                 if (Path.GetExtension(_commandsDisplay.Content.Level.Commands.Filepath).ToUpper() == ".BIN")
@@ -462,45 +560,31 @@ namespace CommandsEditor
             }
 
 #if !DEBUG
+            PatchManager.PatchFileIntegrityCheck(Singleton.Platform, Singleton.PathToAI);
+            PatchManager.PatchPopupMessage(Singleton.Platform, Singleton.PathToAI);
+            PatchManager.UpdateLevelListInPackages(Singleton.Platform, Singleton.PathToAI);
+
+            PatchManager.PatchSkipFrontendFlag(Singleton.Platform, Singleton.PathToAI, SettingsManager.GetBool("OPT_SkipFE"));
+            PatchManager.PatchNoUIFlag(Singleton.Platform, Singleton.PathToAI, SettingsManager.GetBool("OPT_HudDisabled"));
+            PatchManager.PatchMemReplayLogFlag(Singleton.Platform, Singleton.PathToAI, SettingsManager.GetBool("OPT_Mem_Replay_Logs"));
+            PatchManager.PatchUIPerfFlag(Singleton.Platform, Singleton.PathToAI, SettingsManager.GetBool("OPT_cUIEnabled_UIPerf"));
+
             if (SettingsManager.GetBool(Singleton.Settings.LaunchGameWhenSaved))
             {
-                PatchManager.Platform platform;
-                switch (OpenCAGE.SettingsManager.GetString("META_GameVersion"))
-                {
-                    case "STEAM":
-                        platform = PatchManager.Platform.STEAM;
-                        break;
-                    case "EPIC_GAMES_STORE":
-                        platform = PatchManager.Platform.EPIC_GAMES_STORE;
-                        break;
-                    case "GOG":
-                        platform = PatchManager.Platform.GOG;
-                        break;
-                    default:
-                        throw new Exception("Unsupported platform!");
-                }
+                PatchManager.PatchLaunchMode(Singleton.Platform, Singleton.PathToAI, _commandsDisplay.Content.Level.Name);
 
-                PatchManager.PatchLaunchMode(platform, SharedData.pathToAI, _commandsDisplay.Content.Level.Name);
-                PatchManager.PatchFileIntegrityCheck(platform, SharedData.pathToAI);
-                PatchManager.PatchPopupMessage(platform, SharedData.pathToAI);
-                PatchManager.UpdateLevelListInPackages(platform, SharedData.pathToAI);
-
-                PatchManager.PatchSkipFrontendFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_SkipFE"));
-                PatchManager.PatchNoUIFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_HudDisabled"));
-                PatchManager.PatchMemReplayLogFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_Mem_Replay_Logs"));
-                PatchManager.PatchUIPerfFlag(platform, SharedData.pathToAI, SettingsManager.GetBool("OPT_cUIEnabled_UIPerf"));
-
-                if (platform == PatchManager.Platform.STEAM)
+                if (Singleton.Platform == PatchManager.Platform.STEAM)
                 {
                     Process.Start("steam://rungameid/214490");
                 }
                 else
                 {
                     ProcessStartInfo alienProcess = new ProcessStartInfo();
-                    alienProcess.WorkingDirectory = SettingsManager.GetString("PATH_GameRoot");
-                    alienProcess.FileName = SettingsManager.GetString("PATH_GameRoot") + "/AI.exe";
+                    alienProcess.WorkingDirectory = Singleton.PathToAI;
+                    alienProcess.FileName = Singleton.PathToAI + "/AI.exe";
                     Process.Start(alienProcess);
                 }
+                Steam.UnlockAchievement(Steam.Achievements.LAUNCHED_GAME);
             }
 #endif
 
@@ -509,9 +593,16 @@ namespace CommandsEditor
             CloseProgressUI();
 
             Singleton.OnSaved?.Invoke();
+            Steam.UnlockAchievement(Steam.Achievements.FIRST_SAVE);
+
+            int saveCount = SettingsManager.GetInteger(Singleton.Settings.SaveCounter) + 1;
+            SettingsManager.SetInteger(Singleton.Settings.SaveCounter, saveCount);
+            if (saveCount >= 100)
+                Steam.UnlockAchievement(Steam.Achievements.ONE_HUNDRED_SAVES);
+
             //if (saved)
             //{
-                if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt))
+                if (SettingsManager.GetBool(Singleton.Settings.ShowSavedMsgOpt) && successMsg)
                     MessageBox.Show("Saved changes!", "Saved.", MessageBoxButtons.OK, MessageBoxIcon.Information);
             //}
             //else
@@ -545,13 +636,15 @@ namespace CommandsEditor
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = LevelViewerSetup.InstallationPath,
-                    Arguments = $"-projectPath \"{SettingsManager.GetString("PATH_GameRoot")}/DATA/MODTOOLS/REMOTE_ASSETS/levelviewer\"",
+                    Arguments = $"-projectPath \"{Singleton.PathToAI}/DATA/MODTOOLS/REMOTE_ASSETS/levelviewer\"",
                     UseShellExecute = false
                 },
                 EnableRaisingEvents = true
             }; 
             LevelViewerSetup.UnityProcess.Exited += UnityProcess_Exited;
             LevelViewerSetup.UnityProcess.Start();
+
+            Steam.UnlockAchievement(Steam.Achievements.LEVEL_VIEWER_LAUNCHED);
 
             openLevelViewerToolStripMenuItem.Enabled = false;
         }
@@ -746,25 +839,8 @@ namespace CommandsEditor
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
             Process.Start("https://opencage.co.uk/docs/");
-        }
-
-        ControlsWindow _controlsWindow = null;
-        private void ShowControls_Click(object sender, EventArgs e)
-        {
-            if (_controlsWindow != null)
-            {
-                _controlsWindow.FormClosed -= _controlsWindow_FormClosed;
-                _controlsWindow.Close();
-            }
-
-            _controlsWindow = new ControlsWindow();
-            _controlsWindow.Show();
-            _controlsWindow.FormClosed += _controlsWindow_FormClosed;
-        }
-        private void _controlsWindow_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            _controlsWindow = null;
         }
 
         private void DEBUG_ReloadLevel_Click(object sender, EventArgs e)
@@ -782,6 +858,13 @@ namespace CommandsEditor
         {
             openGameOnSaveToolStripMenuItem.Checked = !openGameOnSaveToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.LaunchGameWhenSaved, openGameOnSaveToolStripMenuItem.Checked);
+        }
+
+        private void showGamePlatformToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showGamePlatformToolStripMenuItem.Checked = !showGamePlatformToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.ShowGamePlatform, showGamePlatformToolStripMenuItem.Checked);
+            UpdateTitle();
         }
 
         private void CopyFilesRecursively(string sourcePath, string targetPath)
@@ -895,6 +978,11 @@ namespace CommandsEditor
             galaxyToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
         }
 
+        private void charactersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            assetSetsToolStripMenuItem.Enabled = _commandsDisplay?.Content?.Level != null;
+        }
+
         SetNodeColours _setNodeColours;
         private void setNodeColoursToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -909,6 +997,620 @@ namespace CommandsEditor
         {
             showConfirmationWhenDeletingNodeToolStripMenuItem.Checked = !showConfirmationWhenDeletingNodeToolStripMenuItem.Checked;
             SettingsManager.SetBool(Singleton.Settings.AskBeforeDeletingNode, showConfirmationWhenDeletingNodeToolStripMenuItem.Checked);
+        }
+
+        private void miscToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //NOTE: When in compressed mode, we ALWAYS save in the BIN format, so hide this option in that case.
+            savePAKAndBINToolStripMenuItem.Visible = _commandsDisplay?.Content?.Level?.Commands != null && _commandsDisplay.Content.Level.Commands.Compressed;
+
+            //NOTE: We don't actually allow this to be changed (even though it could be done) because it's not much use, for now at least. Maybe some sort of conversion between compressed and uncompressed levels in future.
+            writeCompressedToolStripMenuItem.Checked = _commandsDisplay?.Content?.Level?.Commands != null && _commandsDisplay.Content.Level.Commands.Compressed;
+            writeCompressedToolStripMenuItem.Enabled = false; 
+        }
+
+        ControlsWindow _controlsWindow = null;
+        private void controlsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_controlsWindow != null)
+            {
+                _controlsWindow.FormClosed -= _controlsWindow_FormClosed;
+                _controlsWindow.Close();
+            }
+
+            _controlsWindow = new ControlsWindow();
+            _controlsWindow.Show();
+            _controlsWindow.FormClosed += _controlsWindow_FormClosed;
+        }
+        private void _controlsWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _controlsWindow = null;
+        }
+
+        LaunchGame _launchGamePopup = null;
+        private void launchGameBtn_Click(object sender, EventArgs e)
+        {
+            if (_launchGamePopup != null)
+            {
+                _launchGamePopup.FormClosed -= _launchGamePopup_FormClosed;
+                _launchGamePopup.Close();
+            }
+
+            _launchGamePopup = new LaunchGame();
+            _launchGamePopup.Show();
+            _launchGamePopup.FormClosed += _launchGamePopup_FormClosed;
+        }
+        private void _launchGamePopup_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _launchGamePopup = null;
+        }
+
+        EditPAK2 _editUiPak = null;
+        private void uIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editUiPak != null)
+            {
+                _editUiPak.FormClosed -= _editUiPak_FormClosed;
+                _editUiPak.Close();
+            }
+
+            _editUiPak = new EditPAK2();
+            _editUiPak.Show();
+            _editUiPak.LoadPAK2("UI.PAK", "UI");
+            _editUiPak.FormClosed += _editUiPak_FormClosed;
+        }
+        private void _editUiPak_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _editUiPak = null;
+        }
+
+        //todo - eventually will want to expand this for anim trees and better handling of data (previews?)
+        EditPAK2 _editAnimations = null;
+        private void animationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editAnimations != null)
+            {
+                _editAnimations.FormClosed -= _editAnimations_FormClosed ;
+                _editAnimations.Close();
+            }
+
+            _editAnimations = new EditPAK2();
+            _editAnimations.Show();
+            _editAnimations.LoadPAK2("GLOBAL/ANIMATION.PAK", "Animations");
+            _editAnimations.FormClosed += _editAnimations_FormClosed;
+        }
+        private void _editAnimations_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _editAnimations = null;
+        }
+
+        Process _behaviourEditor = null;
+        private void behaviourTreesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            KillBehaviourTreeEditor();
+
+            string editorPath = Singleton.PathToAI + "/DATA/MODTOOLS/REMOTE_ASSETS/legendplugin/";
+            _behaviourEditor = Process.Start(new ProcessStartInfo
+                {
+                    FileName = editorPath + "BehaviourTreeEditor.exe",
+                    Arguments = "-pathToAI=\"" + Singleton.PathToAI + "\"",
+                    WorkingDirectory = editorPath,
+                }
+            );
+
+            Steam.UnlockAchievement(Steam.Achievements.BEHAVIOUR_TREE_TOOL_LAUNCHED);
+        }
+
+        private void KillBehaviourTreeEditor()
+        {
+            if (_behaviourEditor != null)
+            {
+                try
+                {
+                    _behaviourEditor?.Kill();
+                    _behaviourEditor?.Close();
+                }
+                catch { }
+            }
+        }
+
+        LevelBackupManager _levelBackups = null;
+        private void manageBackupsBtn_Click(object sender, EventArgs e)
+        {
+            if (_levelBackups != null)
+            {
+                _levelBackups.FormClosed -= _levelBackups_FormClosed;
+                _levelBackups.Close();
+            }
+
+            _levelBackups = new LevelBackupManager();
+            _levelBackups.Show();
+            _levelBackups.FormClosed += _levelBackups_FormClosed;
+        }
+        private void _levelBackups_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _levelBackups = null;
+        }
+
+        #region Config Editors
+        HackingEditor _hackToolEditor = null;
+        private void hackToolDifficultiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_hackToolEditor != null)
+            {
+                _hackToolEditor.FormClosed -= _hackToolEditor_FormClosed;
+                _hackToolEditor.Close();
+            }
+
+            _hackToolEditor = new HackingEditor();
+            _hackToolEditor.Show();
+            _hackToolEditor.FormClosed += _hackToolEditor_FormClosed;
+        }
+        private void _hackToolEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _hackToolEditor = null;
+        }
+
+        LoadMovieEditor _loadMovieEditor = null;
+        private void loadscreenMoviesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_loadMovieEditor != null)
+            {
+                _loadMovieEditor.FormClosed -= _loadMovieEditor_FormClosed;
+                _loadMovieEditor.Close();
+            }
+
+            _loadMovieEditor = new LoadMovieEditor();
+            _loadMovieEditor.Show();
+            _loadMovieEditor.FormClosed += _loadMovieEditor_FormClosed;
+        }
+        private void _loadMovieEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _loadMovieEditor = null;
+        }
+
+        BlueprintEditor _blueprintEditor = null;
+        private void blueprintRecipesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_blueprintEditor != null)
+            {
+                _blueprintEditor.FormClosed -= _blueprintEditor_FormClosed;
+                _blueprintEditor.Close();
+            }
+
+            _blueprintEditor = new BlueprintEditor();
+            _blueprintEditor.Show();
+            _blueprintEditor.FormClosed += _blueprintEditor_FormClosed;
+        }
+        private void _blueprintEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _blueprintEditor = null;
+        }
+
+        AmmoEditor _ammoEditor = null;
+        private void ammoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_ammoEditor != null)
+            {
+                _ammoEditor.FormClosed -= _ammoEditor_FormClosed;
+                _ammoEditor.Close();
+            }
+
+            _ammoEditor = new AmmoEditor();
+            _ammoEditor.Show();
+            _ammoEditor.FormClosed += _ammoEditor_FormClosed;
+        }
+        private void _ammoEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _ammoEditor = null;
+        }
+
+        RadiosityEditor _radiosityEditor = null;
+        private void radiosityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_radiosityEditor != null)
+            {
+                _radiosityEditor.FormClosed -= _radiosityEditor_FormClosed;
+                _radiosityEditor.Close();
+            }
+
+            _radiosityEditor = new RadiosityEditor();
+            _radiosityEditor.Show();
+            _radiosityEditor.FormClosed += _radiosityEditor_FormClosed;
+        }
+        private void _radiosityEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _radiosityEditor = null;
+        }
+
+        GlobalConstantsEditor _globalConstEditor = null;
+        private void globalConstantsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_globalConstEditor != null)
+            {
+                _globalConstEditor.FormClosed -= _globalConstEditor_FormClosed;
+                _globalConstEditor.Close();
+            }
+
+            _globalConstEditor = new GlobalConstantsEditor();
+            _globalConstEditor.Show();
+            _globalConstEditor.FormClosed += _globalConstEditor_FormClosed;
+        }
+        private void _globalConstEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _globalConstEditor = null;
+        }
+
+        LocomotionEditor _locomotionEditor = null;
+        private void locomotionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_locomotionEditor != null)
+            {
+                _locomotionEditor.FormClosed -= _locomotionEditor_FormClosed;
+                _locomotionEditor.Close();
+            }
+
+            _locomotionEditor = new LocomotionEditor();
+            _locomotionEditor.Show();
+            _locomotionEditor.FormClosed += _locomotionEditor_FormClosed;
+        }
+        private void _locomotionEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _locomotionEditor = null;
+        }
+
+        AlienConfigEditor _alienConfigEditor = null;
+        private void alienConfigsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_alienConfigEditor != null)
+            {
+                _alienConfigEditor.FormClosed -= _alienConfigEditor_FormClosed;
+                _alienConfigEditor.Close();
+            }
+
+            _alienConfigEditor = new AlienConfigEditor();
+            _alienConfigEditor.Show();
+            _alienConfigEditor.FormClosed += _alienConfigEditor_FormClosed;
+        }
+        private void _alienConfigEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _alienConfigEditor = null;
+        }
+
+        ViewconeEditor _viewconeEditor = null;
+        private void viewconesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_viewconeEditor != null)
+            {
+                _viewconeEditor.FormClosed -= _viewconeEditor_FormClosed;
+                _viewconeEditor.Close();
+            }
+
+            _viewconeEditor = new ViewconeEditor();
+            _viewconeEditor.Show();
+            _viewconeEditor.FormClosed += _viewconeEditor_FormClosed;
+        }
+        private void _viewconeEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _viewconeEditor = null;
+        }
+
+        SenseEditor _senseEditor = null;
+        private void sensesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_senseEditor != null)
+            {
+                _senseEditor.FormClosed -= _senseEditor_FormClosed;
+                _senseEditor.Close();
+            }
+
+            _senseEditor = new SenseEditor();
+            _senseEditor.Show();
+            _senseEditor.FormClosed += _senseEditor_FormClosed;
+        }
+        private void _senseEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _senseEditor = null;
+        }
+
+        AttributesEditor _attributesEditor = null;
+        private void attributesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_attributesEditor != null)
+            {
+                _attributesEditor.FormClosed -= _attributesEditor_FormClosed;
+                _attributesEditor.Close();
+            }
+
+            _attributesEditor = new AttributesEditor();
+            _attributesEditor.Show();
+            _attributesEditor.FormClosed += _attributesEditor_FormClosed;
+        }
+        private void _attributesEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _attributesEditor = null;
+        }
+
+        VoiceMappingEditor _voiceMapEditor = null;
+        private void voiceMappingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_voiceMapEditor != null)
+            {
+                _voiceMapEditor.FormClosed -= _voiceMapEditor_FormClosed;
+                _voiceMapEditor.Close();
+            }
+
+            _voiceMapEditor = new VoiceMappingEditor();
+            _voiceMapEditor.Show();
+            _voiceMapEditor.FormClosed += _voiceMapEditor_FormClosed;
+        }
+        private void _voiceMapEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _voiceMapEditor = null;
+        }
+
+        CharacterAssetEditor _charAssetEditor = null;
+        private void assetSetsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_charAssetEditor != null)
+            {
+                _charAssetEditor.FormClosed -= _charAssetEditor_FormClosed;
+                _charAssetEditor.Close();
+            }
+
+            _charAssetEditor = new CharacterAssetEditor();
+            _charAssetEditor.Show();
+            _charAssetEditor.FormClosed += _charAssetEditor_FormClosed;
+        }
+        private void _charAssetEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _charAssetEditor = null;
+        }
+
+        PhysicalMaterialEditor _physicalMatEditor = null;
+        private void physicalMaterialsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_physicalMatEditor != null)
+            {
+                _physicalMatEditor.FormClosed -= _physicalMatEditor_FormClosed;
+                _physicalMatEditor.Close();
+            }
+
+            _physicalMatEditor = new PhysicalMaterialEditor();
+            _physicalMatEditor.Show();
+            _physicalMatEditor.FormClosed += _physicalMatEditor_FormClosed;
+        }
+        private void _physicalMatEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _physicalMatEditor = null;
+        }
+
+        ScriptReadableVariableEditor _scriptVariableEditor = null;
+        private void scriptReadableVariablesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_scriptVariableEditor != null)
+            {
+                _scriptVariableEditor.FormClosed -= _scriptVariableEditor_FormClosed;
+                _scriptVariableEditor.Close();
+            }
+
+            _scriptVariableEditor = new ScriptReadableVariableEditor();
+            _scriptVariableEditor.Show();
+            _scriptVariableEditor.FormClosed += _scriptVariableEditor_FormClosed;
+        }
+        private void _scriptVariableEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _scriptVariableEditor = null;
+        }
+
+        PermanentSoundbankEditor _permaSoundbankEditor = null;
+        private void permanentSoundbanksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_permaSoundbankEditor != null)
+            {
+                _permaSoundbankEditor.FormClosed -= _permaSoundbankEditor_FormClosed;
+                _permaSoundbankEditor.Close();
+            }
+
+            _permaSoundbankEditor = new PermanentSoundbankEditor();
+            _permaSoundbankEditor.Show();
+            _permaSoundbankEditor.FormClosed += _permaSoundbankEditor_FormClosed;
+        }
+        private void _permaSoundbankEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _permaSoundbankEditor = null;
+        }
+
+        HairAndSkinShadingEditor _hairShadingEditor = null;
+        private void hairShadingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_hairShadingEditor != null)
+            {
+                _hairShadingEditor.FormClosed -= _hairShadingEditor_FormClosed;
+                _hairShadingEditor.Close();
+            }
+
+            _hairShadingEditor = new HairAndSkinShadingEditor();
+            _hairShadingEditor.Show();
+            _hairShadingEditor.FormClosed += _hairShadingEditor_FormClosed;
+        }
+        private void _hairShadingEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _hairShadingEditor = null;
+        }
+
+        InputsEditor _inputsEditor = null;
+        private void inputsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_inputsEditor != null)
+            {
+                _inputsEditor.FormClosed -= _inputsEditor_FormClosed;
+                _inputsEditor.Close();
+            }
+
+            _inputsEditor = new InputsEditor();
+            _inputsEditor.Show();
+            _inputsEditor.FormClosed += _inputsEditor_FormClosed;
+        }
+        private void _inputsEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _inputsEditor = null;
+        }
+
+        LocalisationEditor _localisationEditor = null;
+        private void localisationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_localisationEditor != null)
+            {
+                _localisationEditor.FormClosed -= _localisationEditor_FormClosed;
+                _localisationEditor.Close();
+            }
+
+            _localisationEditor = new LocalisationEditor();
+            _localisationEditor.Show();
+            _localisationEditor.FormClosed += _localisationEditor_FormClosed;
+        }
+        private void _localisationEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _localisationEditor = null;
+        }
+
+        LevelTextDBEditor _levelTextDBEditor = null;
+        private void levelTextDBsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_levelTextDBEditor != null)
+            {
+                _levelTextDBEditor.FormClosed -= _levelTextDBEditor_FormClosed;
+                _levelTextDBEditor.Close();
+            }
+
+            _levelTextDBEditor = new LevelTextDBEditor();
+            _levelTextDBEditor.Show();
+            _levelTextDBEditor.FormClosed += _levelTextDBEditor_FormClosed;
+        }
+        private void _levelTextDBEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _levelTextDBEditor = null;
+        }
+
+        FontConfigEditor _fontConfigEditor = null;
+        private void fontConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_fontConfigEditor != null)
+            {
+                _fontConfigEditor.FormClosed -= _fontConfigEditor_FormClosed;
+                _fontConfigEditor.Close();
+            }
+
+            _fontConfigEditor = new FontConfigEditor();
+            _fontConfigEditor.Show();
+            _fontConfigEditor.FormClosed += _fontConfigEditor_FormClosed;
+        }
+        private void _fontConfigEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _fontConfigEditor = null;
+        }
+
+        InventoryItemEditor _inventoryItemEditor = null;
+        private void inventoryItemsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_inventoryItemEditor != null)
+            {
+                _inventoryItemEditor.FormClosed -= _inventoryItemEditor_FormClosed;
+                _inventoryItemEditor.Close();
+            }
+
+            _inventoryItemEditor = new InventoryItemEditor();
+            _inventoryItemEditor.Show();
+            _inventoryItemEditor.FormClosed += _inventoryItemEditor_FormClosed;
+        }
+        private void _inventoryItemEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _inventoryItemEditor = null;
+        }
+
+        DifficultyEditor _difficultyEditor = null;
+        private void difficultyModifiersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_difficultyEditor != null)
+            {
+                _difficultyEditor.FormClosed -= _difficultyEditor_FormClosed;
+                _difficultyEditor.Close();
+            }
+
+            _difficultyEditor = new DifficultyEditor();
+            _difficultyEditor.Show();
+            _difficultyEditor.FormClosed += _difficultyEditor_FormClosed;
+        }
+        private void _difficultyEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _difficultyEditor = null;
+        }
+        #endregion
+
+        private About _aboutWindow = null;
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_aboutWindow != null)
+            {
+                _aboutWindow.FormClosed -= _aboutWindow_FormClosed;
+                _aboutWindow.Close();
+            }
+
+            _aboutWindow = new About();
+            _aboutWindow.Show();
+            _aboutWindow.FormClosed += _aboutWindow_FormClosed;
+        }
+        private void _aboutWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _aboutWindow = null;
+        }
+
+        private void documentationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Steam.UnlockAchievement(Steam.Achievements.DOCUMENTATION_CHECKED);
+            Process.Start("https://opencage.co.uk/docs/");
+        }
+
+        private void useStagingBranchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+#if SHIP_BUILD
+            useStagingBranchToolStripMenuItem.Checked = !useStagingBranchToolStripMenuItem.Checked;
+            SettingsManager.SetBool(Singleton.Settings.UseStagingBranch, useStagingBranchToolStripMenuItem.Checked);
+            SettingsManager.SetString(Singleton.Settings.RemoteBranch, useStagingBranchToolStripMenuItem.Checked ? "staging" : "master");
+            if (!_settingUp)
+            {
+                if (_commandsDisplay?.Content?.Level != null)
+                {
+                    if (MessageBox.Show("Would you like to update now? This will relaunch the app. Make sure you have saved!", "Branch changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                        return;
+                }
+                UpdateManager.DoUpdate();
+            }
+#endif
+        }
+
+        private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+#if SHIP_BUILD
+            if (UpdateManager.IsUpdateAvailable(Singleton.Version))
+            {
+                if (_commandsDisplay?.Content?.Level != null)
+                {
+                    if (MessageBox.Show("A new version of OpenCAGE is available! Would you like to update now? This will relaunch the app. Make sure you have saved!", "Update available", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                        return;
+                }
+                else
+                {
+                    MessageBox.Show("A new version of OpenCAGE is available!", "Update available", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                UpdateManager.DoUpdate();
+            }
+            else
+            {
+                MessageBox.Show("You are currently using version " + Singleton.Version + " which is the latest available on " + SettingsManager.GetString(Singleton.Settings.RemoteBranch, "master") + "!", "No update available", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+#endif
         }
     }
 }

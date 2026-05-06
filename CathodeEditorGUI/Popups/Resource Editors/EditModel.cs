@@ -1,4 +1,5 @@
 using AlienPAK;
+using Assimp;
 using CATHODE;
 using CathodeLib;
 using CommandsEditor.Popups.Base;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +28,8 @@ namespace CommandsEditor
         private Dictionary<CheckBox, Models.CS2.Component.LOD.Submesh> checkboxToModelIndex = new Dictionary<CheckBox, Models.CS2.Component.LOD.Submesh>();
         private Dictionary<int, List<CheckBox>> lodToCheckboxes = new Dictionary<int, List<CheckBox>>();
         private Dictionary<int, GroupBox> lodGroups = new Dictionary<int, GroupBox>();
+        private readonly List<(Models.CS2.Component.LOD.RenderingFlag flag, CheckBox cb)> _renderFlagChecks = new List<(Models.CS2.Component.LOD.RenderingFlag, CheckBox)>();
+        private bool _suppressRenderFlagChange;
 
         public Action<Models.CS2.Component> OnModelSelected;
 
@@ -39,40 +43,20 @@ namespace CommandsEditor
             UpdateFilterPanelWidth();
 
             useMaterials.Checked = SettingsManager.GetBool(Singleton.Settings.ShowTexOpt);
+            PopulateRenderFlagCheckboxes();
 
-            treeHelper = new TreeUtility(FileTree, true);
-            {
-                List<string> allModelFileNames = new List<string>();
-                List<string> allModelTagsNames = new List<string>();
-                foreach (Models.CS2 mesh in Content.Level.Models.Entries)
-                {
-                    foreach (Models.CS2.Component component in mesh.Components)
-                    {
-                        if (component.LODs.Count == 0)
-                            continue;
-
-                        Models.CS2.Component.LOD lod0 = component.LODs[0];
-
-                        if (lod0.Submeshes.Count == 0)
-                            continue;
-
-                        Models.CS2.Component.LOD.Submesh submesh0 = lod0.Submeshes[0];
-                        allModelFileNames.Add(CreateTagForMesh(mesh, submesh0, lod0, component));
-                        allModelTagsNames.Add(Content.Level.Models.GetWriteIndex(submesh0).ToString());
-                    }
-                }
-                treeHelper.UpdateFileTree(allModelFileNames, null, allModelTagsNames);
-            }
+            treeHelper = new TreeUtility(FileTree, TreeType.MODELS);
+            RebuildModelFileTree(Content.Level.Models.FindModelLOD(defaultSubmesh));
+            UpdateModelToolsState();
 
             modelViewer = new GUI_ModelViewer();
             modelRendererHost.Child = modelViewer;
 
-            if (defaultSubmesh != null)
-                SelectModelNode(Content.Level.Models.GetWriteIndex(defaultSubmesh));
-            
+            submeshFilterPanel.VerticalScroll.Visible = true;
             selectModelBtn.Visible = showSelectBtn;
 
             this.Disposed += SelectModel_Disposed;
+            FileTree.ImageList = imageList1;
         }
 
         private void SelectModel_Disposed(object sender, EventArgs e)
@@ -89,30 +73,163 @@ namespace CommandsEditor
                 modelRendererHost.Dispose();
         }
 
-        private string GenerateNodeTag(int i)
-        {
-            Models.CS2.Component.LOD.Submesh submesh = Content.Level.Models.GetAtWriteIndex(i);
-            Models.CS2.Component.LOD lod = Content.Level.Models.FindModelLODForSubmesh(submesh);
-            Models.CS2.Component component = Content.Level.Models.FindModelComponentForSubmesh(submesh);
-            Models.CS2 mesh = Content.Level.Models.FindModelForSubmesh(submesh);
-
-            if (mesh == null || submesh == null) return ""; //we currently skip empty submeshes, e.g. ballistics
-
-            return CreateTagForMesh(mesh, submesh, lod, component);
-        }
-
-        private string CreateTagForMesh(Models.CS2 cs2, Models.CS2.Component.LOD.Submesh submesh, Models.CS2.Component.LOD lod, Models.CS2.Component component)
+        private string CreateTagForMesh(Models.CS2 cs2, Models.CS2.Component.LOD lod, Models.CS2.Component component)
         {
             string tag = cs2.Name.Replace('\\', '/') + "/[" + cs2.Components.IndexOf(component).ToString("00") + "] " + lod.Name.Replace('\\', '/');
             if (tag.Length > 0 && tag[0] == '/')
                 tag = tag.Substring(1);
             return tag;
         }
-
-        private void SelectModelNode(int pakIndex)
+        private string CreateTagForMesh(Models.CS2.Component.LOD lod)
         {
-            string thisTag = GenerateNodeTag(pakIndex);
-            treeHelper.SelectNode(thisTag);
+            Models.CS2.Component component = Content.Level.Models.FindModelComponent(lod);
+            Models.CS2 cs2 = Content.Level.Models.FindModel(component);
+            string tag = cs2.Name.Replace('\\', '/') + "/[" + cs2.Components.IndexOf(component).ToString("00") + "] " + lod.Name.Replace('\\', '/');
+            if (tag.Length > 0 && tag[0] == '/')
+                tag = tag.Substring(1);
+            return tag;
+        }
+
+        private void RebuildModelFileTree(Models.CS2.Component.LOD selectedLOD = null)
+        {
+            if (Content?.Level?.Models == null || treeHelper == null) return;
+            List<string> allModelFileNames = new List<string>();
+            List<Models.CS2.Component.LOD> allModelTagsModels = new List<Models.CS2.Component.LOD>();
+            foreach (Models.CS2 mesh in Content.Level.Models.Entries)
+            {
+                foreach (Models.CS2.Component component in mesh.Components)
+                {
+                    if (component.LODs.Count == 0)
+                        continue;
+
+                    Models.CS2.Component.LOD lod0 = component.LODs[0];
+
+                    if (lod0.Submeshes.Count == 0)
+                        continue;
+
+                    allModelFileNames.Add(CreateTagForMesh(mesh, lod0, component));
+                    allModelTagsModels.Add(lod0);
+                }
+            }
+            treeHelper.UpdateFileTree(allModelFileNames, null, null, allModelTagsModels);
+            treeHelper.SelectNode(selectedLOD);
+        }
+
+        private void UpdateModelToolsState()
+        {
+            bool canExportOrEdit = TryGetSelectedCs2(out _);
+            exportCs2Btn.Enabled = canExportOrEdit;
+            editGeometryBtn.Enabled = canExportOrEdit;
+            deleteBtn.Enabled = canExportOrEdit;
+            importModelBtn.Enabled = Content?.Level?.Models != null;
+            SetRenderFlagCheckboxesEnabled(canExportOrEdit && allSubmeshes.Count > 0);
+        }
+
+        private bool TryGetSelectedCs2(out Models.CS2 cs2)
+        {
+            cs2 = null;
+            if (Content?.Level?.Models == null || FileTree.SelectedNode == null) return false;
+            var tag = (TreeItem)FileTree.SelectedNode.Tag;
+            if (tag.Item_Type == TreeItemType.EXPORTABLE_FILE)
+            {
+                cs2 = Content.Level.Models.FindModel(tag.Model_Value);
+                return cs2 != null;
+            }
+            if (tag.Item_Type == TreeItemType.DIRECTORY)
+            {
+                if (!(FileTree.SelectedNode.Nodes.Count > 0 && FileTree.SelectedNode.Nodes[0].Nodes.Count == 0))
+                    return false;
+                cs2 = Content.Level.Models.FindModel(tag.Model_Value);
+                return cs2 != null;
+            }
+            return false;
+        }
+
+        private void importModelBtn_Click(object sender, EventArgs e)
+        {
+            if (Content?.Level?.Models == null) return;
+            OpenFileDialog picker = new OpenFileDialog();
+            picker.Filter = "FBX Model|*.fbx|GLTF Model|*.gltf|OBJ Model|*.obj";
+            if (picker.ShowDialog() != DialogResult.OK) return;
+            Cursor.Current = Cursors.WaitCursor;
+            try
+            {
+                Scene importScene;
+                using (AssimpContext importer = new AssimpContext())
+                {
+                    importScene = importer.ImportFile(picker.FileName,
+                        PostProcessSteps.Triangulate | PostProcessSteps.FindDegenerates | PostProcessSteps.LimitBoneWeights |
+                        PostProcessSteps.GenerateBoundingBoxes | PostProcessSteps.FlipUVs | PostProcessSteps.FlipWindingOrder | PostProcessSteps.MakeLeftHanded);
+                }
+                if (importScene == null || importScene.MeshCount == 0)
+                {
+                    MessageBox.Show("Failed to load model or no mesh data found. Ensure meshes are under the scene root.", "Import failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                Models.CS2.Component.LOD toSelect = null;
+                using (var previewForm = new ModelImportPreview(importScene, picker.FileName, Content.Level.Materials))
+                {
+                    if (previewForm.ShowDialog(this) != DialogResult.OK || previewForm.ResultCs2 == null)
+                        return;
+                    Content.Level.Models.Entries.Add(previewForm.ResultCs2);
+                    if (previewForm.ResultCs2.Components.Count > 0 && previewForm.ResultCs2.Components[0].LODs.Count > 0)
+                        toSelect = previewForm.ResultCs2.Components[0].LODs[0];
+                }
+                RebuildModelFileTree(toSelect);
+                Singleton.OnResourceModified?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Import failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        private void exportCs2Btn_Click(object sender, EventArgs e)
+        {
+            if (!TryGetSelectedCs2(out Models.CS2 cs2)) return;
+            SaveFileDialog picker = new SaveFileDialog();
+            picker.Filter = "FBX Model|*.fbx|GLTF Model|*.gltf|OBJ Model|*.obj";
+            picker.FileName = Path.GetFileNameWithoutExtension(cs2.Name ?? "model");
+            if (picker.ShowDialog() != DialogResult.OK) return;
+            Cursor.Current = Cursors.WaitCursor;
+            try
+            {
+                cs2.ExportMesh(picker.FileName);
+                MessageBox.Show("Successfully exported file.", "Export complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Export failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        private void deleteBtn_Click(object sender, EventArgs e)
+        {
+            if (!TryGetSelectedCs2(out Models.CS2 cs2)) return;
+            if (MessageBox.Show("Are you sure you want to delete '" + cs2.Name + "'?", "About to delete...", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+            Content.Level.Models.Entries.Remove(cs2);
+            RebuildModelFileTree();
+        }
+
+        private void editGeometryBtn_Click(object sender, EventArgs e)
+        {
+            if (!TryGetSelectedCs2(out Models.CS2 cs2)) return;
+            var editor = new ModelEditor(cs2);
+            editor.FormClosed += (s, ev) =>
+            {
+                RebuildModelFileTree();
+                Singleton.OnResourceModified?.Invoke();
+            };
+            editor.Show(this);
         }
 
         private void FileTree_AfterSelect(object sender, TreeViewEventArgs e)
@@ -122,47 +239,50 @@ namespace CommandsEditor
             allSubmeshes.Clear();
             modelPreviewArea.Text = "";
             modelViewer.ShowModel(new List<GUI_ModelViewer.Model>());
+            ResetRenderFlagCheckboxes();
 
-            int selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
-            if (selectedModelIndex == -1)
-                return;
-
-            switch (((TreeItem)FileTree.SelectedNode.Tag).Item_Type)
+            try
             {
-                case TreeItemType.EXPORTABLE_FILE:
-                    {
-                        //Shows an individual model component, which can be selected to be used as a RENDERABLE resource
-                        Models.CS2.Component component = Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(selectedModelIndex));
-                        AddComponent(component);
-                        modelPreviewArea.Text = GenerateNodeTag(selectedModelIndex);
-                        selectModelBtn.Enabled = true;
-                    }
-                    break;
-                case TreeItemType.DIRECTORY:
-                    {
-                        if (!(FileTree.SelectedNode.Nodes.Count > 0 && FileTree.SelectedNode.Nodes[0].Nodes.Count == 0))
-                            return;
+                if (FileTree.SelectedNode == null) return;
 
-                        //Shows a combined model made up of multiple components, cannot be selected as a RENDERABLE resource
-                        Models.CS2.Component.LOD.Submesh submesh = Content.Level.Models.GetAtWriteIndex(selectedModelIndex);
-                        Models.CS2 mesh = Content.Level.Models.FindModelForSubmesh(submesh);
-                        int index = 0;
-                        foreach (Models.CS2.Component component in mesh.Components)
+                Models.CS2.Component.LOD lod = ((TreeItem)FileTree.SelectedNode.Tag).Model_Value;
+
+                switch (((TreeItem)FileTree.SelectedNode.Tag).Item_Type)
+                {
+                    case TreeItemType.EXPORTABLE_FILE:
                         {
-                            AddComponent(component, index);
-                            index += component.LODs.Count;
+                            AddComponent(Content.Level.Models.FindModelComponent(lod));
+                            modelPreviewArea.Text = CreateTagForMesh(lod);
+                            selectModelBtn.Enabled = true;
                         }
-                        modelPreviewArea.Text = mesh.Name.Replace('\\', '/');
-                    }
-                    break;
-                default:
-                    return;
+                        break;
+                    case TreeItemType.DIRECTORY:
+                        {
+                            if (!(FileTree.SelectedNode.Nodes.Count > 0 && FileTree.SelectedNode.Nodes[0].Nodes.Count == 0))
+                                return;
+
+                            Models.CS2 mesh = Content.Level.Models.FindModel(lod);
+                            int index = 0;
+                            foreach (Models.CS2.Component c in mesh.Components)
+                            {
+                                AddComponent(c, index);
+                                index += c.LODs.Count;
+                            }
+                            modelPreviewArea.Text = mesh.Name.Replace('\\', '/');
+                        }
+                        break;
+                    default:
+                        return;
+                }
+
+                UpdateFilteredModel(true);
+                UpdateLODGroupLayouts();
+                ApplyRenderFlagsUiFromSelection();
             }
-
-            UpdateFilteredModel(true);
-            UpdateLODGroupLayouts();
-
-            Debug.Log("Model Viewer", "Showing from index " + selectedModelIndex);
+            finally
+            {
+                UpdateModelToolsState();
+            }
         }
 
         private void AddComponent(Models.CS2.Component component, int baseIndex = 0)
@@ -202,6 +322,7 @@ namespace CommandsEditor
             lodGroups.Clear();
             lodToCheckboxes.Clear();
             submeshFilterPanel.Controls.Clear();
+            submeshFilterPanel.VerticalScroll.Visible = true;
         }
 
         private void CreateLODGroup(int lodIndex, string lodName)
@@ -209,7 +330,7 @@ namespace CommandsEditor
             GroupBox lodGroup = new GroupBox();
             lodGroup.Text = lodName;
             lodGroup.AutoSize = false;
-            lodGroup.Width = 207;
+            lodGroup.Width = 185;
             
             Button selectAllBtn = new Button();
             selectAllBtn.Text = "Show All";
@@ -237,20 +358,6 @@ namespace CommandsEditor
             lodToCheckboxes[lodIndex] = new List<CheckBox>();
         }
 
-        private void UncheckAllLODs()
-        {
-            foreach (KeyValuePair<int, List<CheckBox>> kvp in lodToCheckboxes)
-            {
-                foreach (CheckBox cb in kvp.Value)
-                    cb.CheckedChanged -= SubmeshCheckbox_CheckedChanged;
-                foreach (CheckBox cb in kvp.Value)
-                    cb.Checked = false;
-                foreach (CheckBox cb in kvp.Value)
-                    cb.CheckedChanged += SubmeshCheckbox_CheckedChanged;
-            }
-            UpdateFilteredModel();
-        }
-
         private void CheckAllSubmeshes(int lodIndex, bool state)
         {
             if (lodToCheckboxes.ContainsKey(lodIndex))
@@ -261,8 +368,8 @@ namespace CommandsEditor
                     cb.Checked = state;
                 foreach (CheckBox cb in lodToCheckboxes[lodIndex])
                     cb.CheckedChanged += SubmeshCheckbox_CheckedChanged;
-                
-                UpdateFilteredModel();
+
+                UpdateFilteredModel(false);
             }
         }
 
@@ -306,11 +413,6 @@ namespace CommandsEditor
 
         private void SubmeshCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateFilteredModel();
-        }
-
-        private void UpdateFilteredModel()
-        {
             UpdateFilteredModel(false);
         }
 
@@ -335,15 +437,14 @@ namespace CommandsEditor
 
         private void selectModel_Click(object sender, EventArgs e)
         {
-            int selectedModelIndex = Convert.ToInt32(((TreeItem)FileTree.SelectedNode.Tag).String_Value);
-            OnModelSelected?.Invoke(Content.Level.Models.FindModelComponentForSubmesh(Content.Level.Models.GetAtWriteIndex(selectedModelIndex)));
+            OnModelSelected?.Invoke(Content.Level.Models.FindModelComponent(((TreeItem)FileTree.SelectedNode.Tag).Model_Value));
             this.Close();
         }
 
         private void useMaterials_CheckedChanged(object sender, EventArgs e)
         {
             SettingsManager.SetBool(Singleton.Settings.ShowTexOpt, useMaterials.Checked);
-            UpdateFilteredModel();
+            UpdateFilteredModel(false);
         }
 
         private void SplitContainer2_Resize(object sender, EventArgs e)
@@ -360,6 +461,106 @@ namespace CommandsEditor
             {
                 splitContainer2.SplitterDistance = splitContainer2.Width - filterPanelWidth - splitterWidth;
             }
+        }
+
+        private void PopulateRenderFlagCheckboxes()
+        {
+            if (_renderFlagChecks.Count > 0)
+                return;
+
+            foreach (string name in Enum.GetNames(typeof(Models.CS2.Component.LOD.RenderingFlag)))
+            {
+                var flag = (Models.CS2.Component.LOD.RenderingFlag)Enum.Parse(typeof(Models.CS2.Component.LOD.RenderingFlag), name);
+                if (!IsPowerOfTwoEnumMember(flag))
+                    continue;
+
+                CheckBox cb = new CheckBox
+                {
+                    Text = name.Replace("_", " "),
+                    AutoSize = true,
+                    Margin = new Padding(0, 0, 8, 2),
+                    Enabled = false
+                };
+                cb.CheckedChanged += RenderFlag_CheckedChanged;
+                renderFlagsPanel.Controls.Add(cb);
+                _renderFlagChecks.Add((flag, cb));
+            }
+        }
+
+        private static bool IsPowerOfTwoEnumMember(Enum value)
+        {
+            ulong u = Convert.ToUInt64(value);
+            if (u == 0)
+                return false;
+            return (u & (u - 1)) == 0;
+        }
+
+        private List<Models.CS2.Component.LOD.Submesh> GetSelectedSubmeshes()
+        {
+            return allSubmeshes.Keys.ToList();
+        }
+
+        private void ApplyRenderFlagsUiFromSelection()
+        {
+            List<Models.CS2.Component.LOD.Submesh> selectedSubmeshes = GetSelectedSubmeshes();
+            if (selectedSubmeshes.Count == 0)
+            {
+                ResetRenderFlagCheckboxes();
+                return;
+            }
+
+            _suppressRenderFlagChange = true;
+            foreach (var pair in _renderFlagChecks)
+            {
+                bool allHaveFlag = selectedSubmeshes.All(submesh => submesh.RenderFlags.HasFlag(pair.flag));
+                pair.cb.Checked = allHaveFlag;
+            }
+            _suppressRenderFlagChange = false;
+            SetRenderFlagCheckboxesEnabled(true);
+        }
+
+        private void ResetRenderFlagCheckboxes()
+        {
+            _suppressRenderFlagChange = true;
+            foreach (var pair in _renderFlagChecks)
+            {
+                pair.cb.Checked = false;
+                pair.cb.Enabled = false;
+            }
+            _suppressRenderFlagChange = false;
+        }
+
+        private void SetRenderFlagCheckboxesEnabled(bool enabled)
+        {
+            foreach (var pair in _renderFlagChecks)
+                pair.cb.Enabled = enabled;
+        }
+
+        private void RenderFlag_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_suppressRenderFlagChange)
+                return;
+
+            if (!(sender is CheckBox changedCheck))
+                return;
+
+            var changedPair = _renderFlagChecks.FirstOrDefault(x => x.cb == changedCheck);
+            if (changedPair.cb == null)
+                return;
+
+            List<Models.CS2.Component.LOD.Submesh> selectedSubmeshes = GetSelectedSubmeshes();
+            if (selectedSubmeshes.Count == 0)
+                return;
+
+            foreach (Models.CS2.Component.LOD.Submesh submesh in selectedSubmeshes)
+            {
+                if (changedCheck.Checked)
+                    submesh.RenderFlags |= changedPair.flag;
+                else
+                    submesh.RenderFlags &= ~changedPair.flag;
+            }
+
+            Singleton.OnResourceModified?.Invoke();
         }
     }
 }

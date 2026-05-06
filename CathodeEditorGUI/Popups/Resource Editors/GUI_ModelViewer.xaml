@@ -11,6 +11,7 @@
         <HelixToolkit:HelixViewport3D x:Name="myView" ZoomExtentsWhenLoaded="True" ShowViewCube="True" ViewCubeVerticalPosition="Top" ShowCoordinateSystem="True" CoordinateSystemVerticalPosition="Top">
             <HelixToolkit:SunLight Altitude="160" Azimuth="120" Ambient="0.7" Brightness="1" />
             <ModelVisual3D x:Name="modelPreview"/>
+            <HelixToolkit:SortingVisual3D x:Name="transparentSorter" />
             <!--<HelixToolkit:GridLinesVisual3D Width="8" Length="8" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>-->
         </HelixToolkit:HelixViewport3D>
     </Grid>

@@ -48,7 +48,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.Name = "ShowCompositeInstanceOverrides";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

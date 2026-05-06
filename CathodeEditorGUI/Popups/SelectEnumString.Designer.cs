@@ -35,7 +35,7 @@
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Proxies", System.Windows.Forms.HorizontalAlignment.Left);
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Aliases", System.Windows.Forms.HorizontalAlignment.Left);
             this.clearSearchBtn = new System.Windows.Forms.Button();
-            this.strings = new GroupedListView();
+            this.strings = new System.Windows.Forms.ListView();
             this.ID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.search_box = new System.Windows.Forms.TextBox();
@@ -159,7 +159,7 @@
             this.Controls.Add(this.clearSearchBtn);
             this.Controls.Add(this.strings);
             this.Controls.Add(this.search_box);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "SelectEnumString";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

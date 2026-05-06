@@ -1,6 +1,7 @@
 [submodule "CathodeLib"]
 	path = CathodeLib
 	url = https://github.com/OpenCAGE/CathodeLib
+	branch = staging
 [submodule "STNodeEditor"]
 	path = STNodeEditor
 	url = https://github.com/MattFiler/STNodeEditor

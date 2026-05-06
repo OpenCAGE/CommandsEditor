@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Xml;
 using System.Xml.XPath;
 using System.Windows.Media.Animation;
+using System.IO;
 
 namespace CommandsEditor
 {
@@ -384,7 +385,13 @@ namespace CommandsEditor
         /* Parse an XML to retrieve the enum string values */
         private static List<string> ParseXML(string file, string path, string attribute, bool isNode = false)
         {
-            file = SharedData.pathToAI + "/DATA/" + file;
+            file = Singleton.PathToAI + "/DATA/" + file;
+            if (!File.Exists(file))
+            {
+                Debug.Log("EnumStringListViewItems", $"Could not find {file} to parse enum strings for {attribute}");
+                return new List<string>();
+            }
+
             XDocument xml = System.IO.Path.GetExtension(file) == ".BML" ? XDocument.Load(new XmlNodeReader(new BML(file).Content)) : XDocument.Load(file);
             foreach (var elem in xml.Descendants())
                 elem.Name = elem.Name.LocalName;

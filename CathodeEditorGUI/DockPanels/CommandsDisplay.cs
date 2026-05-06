@@ -1,28 +1,29 @@
-using CATHODE.Scripting;
 using CATHODE;
+using CATHODE.Scripting;
+using CATHODE.Scripting.Internal;
+using CathodeLib;
+using CommandsEditor.Popups;
+using DarkModeForms;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
-using CATHODE.Scripting.Internal;
-using System.Windows.Controls;
-using System.Xml.Linq;
-using System.Windows.Interop;
-using WebSocketSharp;
-using CommandsEditor.Popups;
-using OpenCAGE;
 using System.IO;
+using System.Linq;
 using System.Runtime.Remoting.Messaging;
-using ListViewItem = System.Windows.Forms.ListViewItem;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Interop;
 using System.Windows.Media.Animation;
-using CathodeLib;
+using System.Xml.Linq;
+using WebSocketSharp;
+using WeifenLuo.WinFormsUI.Docking;
+using ListViewItem = System.Windows.Forms.ListViewItem;
 
 namespace CommandsEditor.DockPanels
 {
@@ -44,7 +45,7 @@ namespace CommandsEditor.DockPanels
         AddComposite _addCompositeDialog = null;
         AddFolder _addFolderDialog = null;
 
-        private int _defaultSplitterDistance = 330;
+        private int _defaultSplitterDistance = 324;
 
         public CommandsDisplay(string levelName)
         {
@@ -55,7 +56,7 @@ namespace CommandsEditor.DockPanels
             this.Load += CommandsDisplay_Load;
 
             _content = new LevelContent(levelName);
-            _treeUtility = new TreeUtility(treeView1);
+            _treeUtility = new TreeUtility(treeView1, TreeType.SCRIPTS);
 
             Singleton.OnCompositeRenamed += OnCompositeRenamed;
         }
@@ -557,8 +558,9 @@ namespace CommandsEditor.DockPanels
                 var lv = sender as System.Windows.Forms.ListView;
                 var item = lv.HitTest(e.Location).Item;
 
-                deleteFolderToolStripMenuItem.Enabled = item != null;
-                renameToolStripMenuItem.Enabled = item != null;
+                Composite comp = item != null && item.Tag != null ? ((ListViewItemContent)item.Tag).Composite : null;
+                deleteFolderToolStripMenuItem.Enabled = comp != null && !Content.Level.Commands.EntryPoints.Contains(comp);
+                renameToolStripMenuItem.Enabled = comp != null && (Content.Level.Commands.EntryPoints[0] == comp || !Content.Level.Commands.EntryPoints.Contains(comp));
 
                 if (item != null)
                     lv.FocusedItem = item;
@@ -577,8 +579,9 @@ namespace CommandsEditor.DockPanels
                 var lv = sender as System.Windows.Forms.TreeView;
                 _rightClickedNode = lv.HitTest(e.Location).Node;
 
-                toolStripMenuItem4.Enabled = _rightClickedNode != null;
-                toolStripMenuItem5.Enabled = _rightClickedNode != null;
+                Composite comp = _rightClickedNode != null && _rightClickedNode.Tag != null ? Content.Level.Commands.GetComposite(((TreeItem)_rightClickedNode.Tag).String_Value) : null;
+                toolStripMenuItem4.Enabled = comp != null && !Content.Level.Commands.EntryPoints.Contains(comp);
+                toolStripMenuItem5.Enabled = comp != null && (Content.Level.Commands.EntryPoints[0] == comp || !Content.Level.Commands.EntryPoints.Contains(comp));
 
                 if (_rightClickedNode == null)
                 {

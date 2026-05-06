@@ -204,7 +204,7 @@
             this.CloseButton = false;
             this.CloseButtonVisible = false;
             this.Controls.Add(this.compositeEntityList1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "EntityList";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
             this.Text = "Entities";

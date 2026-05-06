@@ -9,13 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Shapes;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using static CathodeLib.CompositeFlowgraphTable;
 
 namespace CommandsEditor
 {
@@ -27,21 +28,17 @@ namespace CommandsEditor
         public Dictionary<Composite, Dictionary<Entity, ListViewItem>> composite_content_cache = new Dictionary<Composite, Dictionary<Entity, ListViewItem>>();
         public EditorUtils EditorUtils = null; //TODO: this should really be refactored. hacked in legacy stuff.
 
+        public bool IsVanilla = false; //The user has not yet saved this level using OpenCAGE
+
         private Thread _globalUpdateThread = null;
 
         public LevelContent(string levelName)
         {
-            Level = new Level(SharedData.pathToAI + "/DATA/ENV/" + levelName + "/", Singleton.Global, false);
+            Level = new Level(Singleton.PathToAI + "/DATA/ENV/" + levelName + "/", Singleton.Global, false);
         }
 
         public void Load()
         {
-#if USE_PRETTY_COMPOSITE_PATHS
-            Commands.UsePrettyPaths = true;
-#else
-            Commands.UsePrettyPaths = false;
-#endif
-
             Level.Load();
             if (!Level.Commands.Loaded || Level.Commands.EntryPoints == null || Level.Commands.EntryPoints[0] == null)
             {
@@ -49,7 +46,6 @@ namespace CommandsEditor
                 return;
             }
             Level.Commands.Entries = Level.Commands.Entries.OrderBy(o => o.name).ToList();
-            Level.Commands.EntryPoints[0].name = EditorUtils.GetCompositeName(Level.Commands.EntryPoints[0]);
 
             //Import Global stuff, if required
 #if IMPORT_GLOBAL_ASSETS
@@ -64,8 +60,60 @@ namespace CommandsEditor
 #endif
 
             //Link up commands to utils and cache some things
-            FlowgraphLayoutManager.LinkCommands(Level.Commands);
+            FlowgraphLayoutManager.LinkCommands(this);
             ParameterModificationTracker.LinkCommands(Level.Commands);
+
+            //If we're loading for the first time...
+            if (!Level.Commands.Utils.Flags.HasBeenModified)
+            {
+                //Tidy up composite names so things look nicer - only need to do this for PAK, BIN has this info
+                if (Path.GetFileName(Level.Commands.Filepath.ToUpper()) == "COMMANDS.PAK")
+                    Level.Commands.Utils.SetPrettyNames();
+
+                //Correct the root composite name - by default it's a full filepath which looks gross
+                Level.Commands.EntryPoints[0].name = EditorUtils.GetCompositeName(Level.Commands.EntryPoints[0]);
+
+                //Apply material remappings
+                ShortGuid mapping = ShortGuidUtils.Generate("mapping");
+                FlowgraphMeta.SupportedLevel levelID;
+                bool hasLevelID = Enum.TryParse(Path.GetFileName(Level.Name).ToUpper(), out levelID);
+                foreach (MaterialMappingTable.Mapping map in CustomTable.Vanilla.MaterialMappings.Mappings)
+                {
+                    if (!map.AlwaysUse && (!hasLevelID || !map.SupportedLevels.HasFlag(levelID)))
+                        continue;
+
+                    Composite comp = Level.Commands.GetComposite(map.CompositeID);
+                    Entity ent = comp?.GetEntityByID(map.EntityID);
+                    ent?.AddParameter(mapping, new cResource(null, map.MappingID));
+                }
+                foreach (MaterialMappingTable.MappingAlias map in CustomTable.Vanilla.MaterialMappings.MappingAliases)
+                {
+                    if (!map.AlwaysUse && (!hasLevelID || !map.SupportedLevels.HasFlag(levelID)))
+                        continue;
+
+                    EntityPath path = new EntityPath(map.EntityPath.ToArray());
+                    Composite comp = Level.Commands.GetComposite(map.CompositeID);
+                    if (comp == null)
+                        continue;
+                    bool didFind = false;
+                    foreach (KeyValuePair<ShortGuid, AliasEntity> alias in comp.aliases_dictionary)
+                    {
+                        if (alias.Value.alias == path)
+                        {
+                            didFind = true;
+                            alias.Value.AddParameter(mapping, new cResource(null, map.MappingID));
+                            break;
+                        }
+                    }
+                    if (!didFind)
+                    {
+                        comp.AddAlias(path.path).AddParameter(mapping, new cResource(null, map.MappingID));
+                    }
+                }
+
+                //Remember that we were modified so we don't do this again
+                Level.Commands.Utils.Flags.HasBeenModified = true;
+            }
 
             //Correct all Entity names that are actually pointers to resources
             foreach (Composite comp in Level.Commands.Entries)
@@ -92,6 +140,16 @@ namespace CommandsEditor
             }
 
             Singleton.OnLevelLoaded?.Invoke(this);
+        }
+
+        public void Save()
+        {
+            Level.Save();
+#if !IMPORT_GLOBAL_ASSETS
+            //TODO - we can't actually save the global textures without re-saving every other level as it'll screw with indexes - need to make a utility to make this simpler.
+            //Singleton.Global?.Textures?.Save();
+#endif
+            IsVanilla = false;
         }
 
         public void Dispose()
@@ -172,6 +230,7 @@ namespace CommandsEditor
         public static LevelContent DEBUG_LoadUnthreadedAndPopulateShortGuids(string level)
         {
             LevelContent content = new LevelContent(level);
+            content.Level.Load();
 
             content.EditorUtils = new EditorUtils(content);
             content.EditorUtils.GenerateEntityNameCache(Singleton.Editor);
@@ -259,12 +318,12 @@ namespace CommandsEditor
                     else item.SubItems.Add(((FunctionType)(((FunctionEntity)entity).function.AsUInt32)).ToString());
                     break;
                 case EntityVariant.ALIAS:
-                    item.Text = Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveAlias((AliasEntity)entity, composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
+                    item.Text = Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveAlias((AliasEntity)entity, composite), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids));
                     item.SubItems.Add("");
                     break;
                 case EntityVariant.PROXY:
                     item.Text = Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID); 
-                    item.SubItems.Add(Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveProxy((ProxyEntity)entity), SettingsManager.GetBool("CS_ShowEntityIDs")));
+                    item.SubItems.Add(Level.Commands.Utils.GetResolvedAsString(Level.Commands.Utils.ResolveProxy((ProxyEntity)entity), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids)));
                     break;
             }
             item.SubItems.Add(entity.shortGUID.ToByteString());

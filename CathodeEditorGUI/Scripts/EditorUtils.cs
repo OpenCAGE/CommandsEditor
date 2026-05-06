@@ -4,8 +4,10 @@ using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.DockPanels;
 using OpenCAGE;
+using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
@@ -64,9 +66,9 @@ namespace CommandsEditor
 
             _prevTaskToken = new CancellationTokenSource();
 
-            if (runOnThread)
-                Task.Run(() => Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
-            else
+            //if (runOnThread)
+            //    Task.Run(() => Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token), _prevTaskToken.Token);
+            //else
                 Content.EditorUtils.GenerateCompositeInstancesRecursive(commands, commands.EntryPoints[0], new List<ShortGuid>(), _prevTaskToken.Token);
         }
         private void GenerateCompositeInstancesRecursive(Commands commands, Composite composite, List<ShortGuid> hierarchy, CancellationToken ct)
@@ -289,10 +291,10 @@ namespace CommandsEditor
                         desc = Content.Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + ((FunctionType)((FunctionEntity)entity).function.AsUInt32).ToString() + ")";
                     break;
                 case EntityVariant.ALIAS:
-                    desc = "[ALIAS] " + Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias((AliasEntity)entity, composite), SettingsManager.GetBool("CS_ShowEntityIDs"));
+                    desc = "[ALIAS] " + Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveAlias((AliasEntity)entity, composite), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids));
                     break;
                 case EntityVariant.PROXY:
-                    desc = "[PROXY] " + Content.Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveProxy((ProxyEntity)entity), SettingsManager.GetBool("CS_ShowEntityIDs")) + ")";
+                    desc = "[PROXY] " + Content.Level.Commands.Utils.GetEntityName(composite.shortGUID, entity.shortGUID) + " (" + Content.Level.Commands.Utils.GetResolvedAsString(Content.Level.Commands.Utils.ResolveProxy((ProxyEntity)entity), SettingsManager.GetBool(Singleton.Settings.ShowShortGuids)) + ")";
                     break;
             }
             bool showID = SettingsManager.GetBool(Singleton.Settings.ShowShortGuids);
@@ -390,6 +392,24 @@ namespace CommandsEditor
             return editedText;
         }
 
+        /* Populates a combobox with available levels and selects the appropriate one - you should update OPT_LoadToMap on selected change */
+        public static void PopulateLevelDropdown(ComboBox dropdown)
+        {
+            string toSelect = Singleton.Editor?.CommandsDisplay?.Content?.Level?.Name;
+            if (toSelect == null) toSelect = SettingsManager.GetString(Singleton.Settings.LastSelectedLevel);
+
+            dropdown.BeginUpdate();
+            dropdown.Items.Clear();
+            dropdown.Items.AddRange(Level.GetLevels(Singleton.PathToAI).ToArray());
+            dropdown.SelectedItem = toSelect.ToUpper();
+            if (dropdown.SelectedIndex == -1)
+            {
+                if (dropdown.Items.Contains("PRODUCTION/FRONTEND")) dropdown.SelectedItem = "PRODUCTION/FRONTEND";
+                else dropdown.SelectedIndex = 0;
+            }
+            dropdown.EndUpdate();
+        }
+
         /* Utility: get composite name */
         public static string GetCompositeName(Composite comp)
         {
@@ -397,6 +417,28 @@ namespace CommandsEditor
                 return "";
             string[] cont = comp.name.Replace('\\', '/').Split('/');
             return cont[cont.Length - 1];
+        }
+
+        /* Utility: close the game down */
+        public static void CloseAI(List<string> additionalProcesses = null)
+        {
+            List<Process> allProcesses = new List<Process>(Process.GetProcessesByName("AI"));
+            if (additionalProcesses != null)
+            {
+                foreach (string additionalProcess in additionalProcesses)
+                {
+                    allProcesses.AddRange(Process.GetProcessesByName(additionalProcess));
+                }
+            }
+            for (int x = 0; x < allProcesses.Count; x++)
+            {
+                try
+                {
+                    allProcesses[x]?.Kill();
+                    allProcesses[x]?.WaitForExit();
+                }
+                catch { }
+            }
         }
 
         /* Utility: get the image/group index for an entity, for populating ListViewItems */
@@ -756,6 +798,74 @@ namespace CommandsEditor
             Type enumType = typeof(TEnum);
             FieldInfo[] fields = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
             return fields.OrderBy(f => f.MetadataToken).Select(f => f.Name);
+        }
+    }
+
+    public static class Steam
+    {
+        public enum Achievements 
+        {
+            FIRST_LOAD, // User has loaded a level for the first time
+            FIRST_SAVE, // User has performed their first save of a level
+            ONE_HUNDRED_SAVES, // User has saved 100 times
+            CREATE_A_NEW_ENTITY, // User has created a new entity for the first time
+            ONE_HUNDRED_ENTITIES, // User has created 100 new entities
+            LAUNCHED_GAME, // User has launched in to the game
+            BACKUP_CREATED, // User has made their first backup
+            DOCUMENTATION_CHECKED, // User has visited the documentation
+            CONFIG_MODIFIED, // User has modified a config file
+            BEHAVIOUR_TREE_TOOL_LAUNCHED, // User has launched the behaviour tree tool
+            ASSETS_MODIFIED, // User has modified some assets
+            LEVEL_VIEWER_LAUNCHED, // User has launched the level viewer for the first time
+            GALAXY_MODIFIED, // User has modified the galaxy config
+        }
+
+        public static void UnlockAchievement(Achievements achievement)
+        {
+#if SHIP_BUILD
+            if (!Singleton.IsSteamworks)
+                return;
+
+            bool result = SteamUserStats.SetAchievement(achievement.ToString());
+            if (result)
+                SteamUserStats.StoreStats();
+            else
+                Console.WriteLine("Failed to unlock achievement: " + achievement.ToString());
+#endif
+        }
+
+        public enum RichPresences
+        {
+            EditingLevel,
+
+            NO_PRESENCE
+        }
+
+        private static RichPresences _currentRP = RichPresences.NO_PRESENCE;
+        private static string _currentAI = "";
+
+        public static void UpdatePresence(RichPresences presence, string additionalInfo = "")
+        {
+#if SHIP_BUILD
+            if (!Singleton.IsSteamworks)
+                return;
+
+            if (presence == _currentRP && additionalInfo == _currentAI)
+                return;
+
+            if (presence == RichPresences.NO_PRESENCE)
+            {
+                SteamFriends.ClearRichPresence();
+                return;
+            }
+
+            if (additionalInfo != "")
+                SteamFriends.SetRichPresence("AdditionalInfo", additionalInfo);
+            SteamFriends.SetRichPresence("steam_display", "#" + presence.ToString());
+
+            _currentRP = presence;
+            _currentAI = additionalInfo;
+#endif
         }
     }
 }

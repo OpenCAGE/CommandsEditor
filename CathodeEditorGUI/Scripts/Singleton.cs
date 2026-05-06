@@ -18,6 +18,13 @@ namespace CommandsEditor
     {
         public static CommandsEditor Editor;
 
+        //Metadata
+        public static string PathToAI = "";
+        public static PatchManager.Platform Platform = PatchManager.Platform.UNKNOWN;
+        public static bool IsOfflineMode = false;
+        public static bool IsSteamworks = false;
+        public static string Version = "";
+
         //Global localised string DBs for English
         public static Dictionary<string, TextDB> GlobalTextDBs = new Dictionary<string, TextDB>();
 
@@ -58,6 +65,8 @@ namespace CommandsEditor
         public static Action OnParameterModified;
         public static Action OnResourceModified;
         public static Action OnNodeStyleChanged;
+        public static Action<SelectEnumString> OnEnumStringUIShown;
+        public static Action OnResetConfigs;
 
         //Composite display events
         public static Action<CompositeDisplay> OnCompositeDisplayOpening;
@@ -86,7 +95,7 @@ namespace CommandsEditor
             public readonly string AutoHideCompositeDisplay = "CS_FileBrowserAutoHide";
             public readonly string KeepUsesWindowOpen = "CS_KeepUsesWindowOpen";
             public readonly string EntitySplitWidth = "CS_EntitySplitWidth";
-            public readonly string CompositeSplitWidth = "CS_CompositeSplitWidth";
+            public readonly string CompositeSplitWidth = "CS_CompositeSplitWidth2";
             public readonly string CommandsSplitWidth = "CS_CommandsSplitWidth";
             public readonly string WindowWidth = "CS_WindowWidth";
             public readonly string WindowHeight = "CS_WindowHeight";
@@ -137,6 +146,14 @@ namespace CommandsEditor
             public readonly string NodeColour_VariableNode = "CS_NodeColour_VariableNode";
             public readonly string NodeColour_VariableText = "CS_NodeColour_VariableText";
             public readonly string AskBeforeDeletingNode = "CS_AskBeforeDeletingNode";
+            public readonly string ShowGamePlatform = "CONFIG_ShowPlatform";
+            public readonly string LastSelectedLevel = "OPT_LoadToMap";
+            public readonly string RemoteBranch = "CONFIG_RemoteBranch";
+            public readonly string GameRoot = "PATH_GameRoot";
+            public readonly string UseStagingBranch = "CONFIG_UseStagingBranch";
+            public readonly string SkipUpdate = "CONFIG_SkipUpdateCheck";
+            public readonly string SaveCounter = "CS_SaveCounter";
+            public readonly string EntityCounter = "CS_EntityCounter";
         }
 
         public static Action OnAnimationsLoaded;
@@ -151,7 +168,7 @@ namespace CommandsEditor
         public static void LoadGlobals()
         {
             //Populate localised text string databases (in English)
-            List<string> textList = Directory.GetFiles(SharedData.pathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
+            List<string> textList = Directory.GetFiles(Singleton.PathToAI + "/DATA/TEXT/ENGLISH/", "*.TXT", SearchOption.AllDirectories).ToList<string>();
             {
                 TextDB[] strings = new TextDB[textList.Count];
                 Parallel.For(0, textList.Count, (i) =>
@@ -165,10 +182,10 @@ namespace CommandsEditor
             Debug.Log("Asset Loader", "Loading anim data");
 
             //Load animation data
-            PAK2 animPAK = new PAK2(SharedData.pathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
+            PAK2 animPAK = new PAK2(Singleton.PathToAI + "/DATA/GLOBAL/ANIMATION.PAK");
 
             //Create global
-            Global = new Global(SharedData.pathToAI + "\\DATA\\ENV\\GLOBAL\\", animPAK);
+            Global = new Global(Singleton.PathToAI + "\\DATA\\ENV\\GLOBAL\\", animPAK);
 
             //Load all male/female skeletons
             List<PAK2.File> skeletonDefs = animPAK.Entries.FindAll(o => o.Filename.Length > 17 && o.Filename.Substring(0, 17) == "DATA\\SKELETONDEFS");

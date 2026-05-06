@@ -26,7 +26,7 @@ namespace CommandsEditor
         {
             InitializeComponent();
 
-            _treeUtility = new TreeUtility(compositeTree);
+            _treeUtility = new TreeUtility(compositeTree, TreeType.SCRIPTS);
             _composite = composite;
 
             _treeUtility.UpdateFileTree(Content.Level.Commands.GetCompositeNames().ToList());

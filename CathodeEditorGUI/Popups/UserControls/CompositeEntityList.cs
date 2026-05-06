@@ -2,6 +2,7 @@
 using CATHODE.Scripting.Internal;
 using CathodeLib;
 using CommandsEditor.UserControls;
+using DarkModeForms;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -208,6 +209,7 @@ namespace CommandsEditor.Popups.UserControls
             //composite_content.SetGroupState(ListViewGroupState.Collapsible);
             composite_content.EndUpdate();
             composite_content.ResumeLayout();
+            DarkModeCS.TryRefreshThemedListView(composite_content);
         }
 
         private void composite_content_SelectedIndexChanged(object sender, EventArgs e)

@@ -32,12 +32,13 @@ namespace CommandsEditor
 
         public static Commands LinkedCommands => _commands;
         private static Commands _commands;
+        private static LevelContent _content;
 
         static FlowgraphLayoutManager()
         {
             byte[] contentCompressed = Properties.Resources.flowgraphs;
-            if (File.Exists("LocalDB\\flowgraphs.dat"))
-                contentCompressed = File.ReadAllBytes("LocalDB\\flowgraphs.dat");
+            if (File.Exists("data/info.dat"))
+                contentCompressed = File.ReadAllBytes("data/info.dat");
             byte[] content = null;
 
             using (MemoryStream stream = new MemoryStream())
@@ -240,7 +241,7 @@ namespace CommandsEditor
             return null;
         }
 
-        public static void LinkCommands(Commands commands)
+        public static void LinkCommands(LevelContent content)
         {
             if (_commands != null)
             {
@@ -248,7 +249,8 @@ namespace CommandsEditor
                 _commands.OnSaveSuccess -= SaveCustomFlowgraphs;
             }
 
-            _commands = commands;
+            _commands = content?.Level?.Commands;
+            _content = content;
             if (_commands == null) return;
 
             _commands.OnLoadSuccess += LoadCustomFlowgraphs;
@@ -271,22 +273,40 @@ namespace CommandsEditor
             if (_history == null) _history = new CompositePageHistoryTable();
             Debug.Log("Flowgraph Manager", "Loaded " + _history.last_composite_page.Count + " previously opened pages!");
 
+            _content.IsVanilla = _userDefinedLayouts.flowgraphs.Count + _compatibility.compatibility_info.Count + _history.last_composite_page.Count == 0;
+
             //Copy the default layouts over for composites in this Commands if they don't already exist
-            if (Enum.TryParse(Path.GetFileName(_commands.EntryPoints[0].name).ToUpper(), out FlowgraphMeta.SupportedLevel level))
+            FlowgraphMeta.SupportedLevel levelID;
+            bool hasLevelID = Enum.TryParse(Path.GetFileName(_content.Level.Name).ToUpper(), out levelID);
+            List<FlowgraphMeta> newFlowgraphs = new List<FlowgraphMeta>();
+#if DEBUG
+            HashSet<ShortGuid> mappedComps = new HashSet<ShortGuid>();
+#endif
+            for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
             {
-                if (_userDefinedLayouts.flowgraphs.Count == 0)
-                {
-                    for (int i = 0; i < _preDefinedLayouts.flowgraphs.Count; i++)
-                    {
-                        if (!_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(level))
-                            continue;
-                        if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
-                            continue;
-                        _userDefinedLayouts.flowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
-                    }
-                    Debug.Log("Flowgraph Manager", "Applied " + _userDefinedLayouts.flowgraphs.Count + " suitable flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available!");
-                }
+                if (!_preDefinedLayouts.flowgraphs[i].AlwaysUse && (!hasLevelID || !_preDefinedLayouts.flowgraphs[i].SupportedLevels.HasFlag(levelID)))
+                    continue;
+                if (_commands.Entries.FirstOrDefault(o => o.shortGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) == null)
+                    continue;
+                if (_userDefinedLayouts.flowgraphs.FirstOrDefault(o => o.CompositeGUID == _preDefinedLayouts.flowgraphs[i].CompositeGUID) != null)
+                    continue;
+                newFlowgraphs.Add(_preDefinedLayouts.flowgraphs[i].Copy());
+#if DEBUG
+                mappedComps.Add(_preDefinedLayouts.flowgraphs[i].CompositeGUID);
+#endif
             }
+            _userDefinedLayouts.flowgraphs.AddRange(newFlowgraphs);
+#if DEBUG
+            Debug.Log("Flowgraph Manager", "Applied " + newFlowgraphs.Count + " suitable new flowgraph layouts, of the " + _preDefinedLayouts.flowgraphs.Count + " available.");
+            Debug.Log("Flowgraph Manager", (((float)mappedComps.Count / (float)_commands.Entries.Count) * 100.0f) + "% of the composites in this level have layouts!");
+            foreach (Composite comp in _commands.Entries)
+            {
+                if (mappedComps.Contains(comp.shortGUID))
+                    continue;
+                
+                Debug.Log("Flowgraph Manager", "NO LAYOUT FOR: " + comp.name);
+            }
+#endif
         }
 
         private static void SaveCustomFlowgraphs(string filepath)

@@ -1,4 +1,4 @@
-namespace CommandsEditor
+﻿namespace CommandsEditor
 {
     partial class AddEntity_Function
     {
@@ -110,7 +110,7 @@ namespace CommandsEditor
             this.Controls.Add(this.addDefaultParams);
             this.Controls.Add(this.createEntity);
             this.Controls.Add(this.entityName);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "AddEntity_Function";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Create Function Entity";

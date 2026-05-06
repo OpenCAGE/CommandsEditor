@@ -191,22 +191,22 @@ namespace CommandsEditor.UserControls
         [Serializable]
         private class UnityTransform
         {
-            public Vector3Unity position;
-            public QuaternionUnity rotation;
-            public Vector3Unity scale;
+            public Vector3Unity position = new Vector3Unity();
+            public QuaternionUnity rotation = new QuaternionUnity();
+            public Vector3Unity scale = new Vector3Unity();
             
             public class Vector3Unity
             {
-                public float x;
-                public float y;
-                public float z;
+                public float x = 0.0f;
+                public float y = 0.0f;
+                public float z = 0.0f;
             }
             public class QuaternionUnity
             {
-                public float x;
-                public float y;
-                public float z;
-                public float w;
+                public float x = 0.0f;
+                public float y = 0.0f;
+                public float z = 0.0f;
+                public float w = 0.0f;
             }
         }
     }

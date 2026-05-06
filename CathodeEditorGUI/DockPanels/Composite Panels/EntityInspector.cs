@@ -320,7 +320,7 @@ namespace CommandsEditor.DockPanels
                     hierarchyDisplay.Visible = true;
                     List<Tuple<Composite, Entity>> resolvedHierarchy = Content.Level.Commands.Utils.ResolveAliasOrProxy(_entity, Composite);
                     (Composite comp, Entity ent) = Content.Level.Commands.Utils.GetResolvedTarget(resolvedHierarchy);
-                    hierarchyDisplay.Text = Content.Level.Commands.Utils.GetResolvedAsString(resolvedHierarchy, SettingsManager.GetBool("CS_ShowEntityIDs"));
+                    hierarchyDisplay.Text = Content.Level.Commands.Utils.GetResolvedAsString(resolvedHierarchy, SettingsManager.GetBool(Singleton.Settings.ShowShortGuids));
                     jumpToComposite.Visible = true;
                     selected_entity_name.Text = (_entity.variant == EntityVariant.PROXY ? "Proxy to " : "Alias of ") + Content.Level.Commands.Utils.GetEntityName(comp, ent);
                     break;
@@ -332,7 +332,7 @@ namespace CommandsEditor.DockPanels
             this.Text = selected_entity_name.Text;
 
             //show mvr editor button if this entity has a mvr link
-            if (Content.Level.Movers != null && Content.Level.Movers.Entries.FirstOrDefault(o => o.entity?.entity_id == this._entity.shortGUID) != null)
+            if (Content.Level.Movers != null && Content.Level.Movers.Entries.FirstOrDefault(o => o.Entity?.entity_id == this._entity.shortGUID) != null)
                 editEntityMovers.Enabled = true;
 
 #if DO_ENTITY_PERF_CHECK
@@ -443,80 +443,97 @@ namespace CommandsEditor.DockPanels
                 ParameterData this_param = _entity.parameters[i].content;
                 ParameterUserControl parameterGUI = null;
                 string paramName = _entity.parameters[i].name.ToString();
-                switch (this_param.dataType)
+
+                //HACK: We handle composite material mappings as a special type!
+                if (paramName == "mapping")
                 {
-                    case DataType.TRANSFORM:
-                        parameterGUI = new GUI_TransformDataType();
-                        ((GUI_TransformDataType)parameterGUI).PopulateUI(_entity, (cTransform)this_param, paramName);
-                        break;
-                    case DataType.INTEGER:
-                        parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
-                        break;
-                    case DataType.ENUM_STRING:
-                        parameterGUI = new GUI_StringVariant_AssetDropdown();
-                        ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cEnumString)this_param, paramName, false); //TODO: allow type selection?
-                        break;
-                    case DataType.STRING:
-                        parameterGUI = new GUI_StringDataType();
-                        ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
-                        break;
-                    case DataType.BOOL:
-                        parameterGUI = new GUI_BoolDataType();
-                        ((GUI_BoolDataType)parameterGUI).PopulateUI((cBool)this_param, paramName);
-                        break;
-                    case DataType.FLOAT:
-                        parameterGUI = new GUI_NumericDataType();
-                        ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, paramName);
-                        break;
-                    case DataType.VECTOR:
-                        //TODO: Should add a "colour" flag to handle this nicer.
-                        switch (paramName)
-                        {
-                            case "AMBIENT_LIGHTING_COLOUR":
-                            case "COLOUR_TINT_START":
-                            case "COLOUR_TINT_MID":
-                            case "COLOUR_TINT_END":
-                            case "COLOUR_TINT":
-                            case "COLOUR_TINT_OUTER":
-                            case "DEPTH_INTERSECT_COLOUR_VALUE":
-                            case "DEPTH_INTERSECT_INITIAL_COLOUR":
-                            case "DEPTH_INTERSECT_MIDPOINT_COLOUR":
-                            case "DEPTH_INTERSECT_END_COLOUR":
-                            case "DEPTH_FOG_INITIAL_COLOUR":
-                            case "DEPTH_FOG_MIDPOINT_COLOUR":
-                            case "DEPTH_FOG_END_COLOUR":
-                            case "ColourFactor":
-                            case "lens_flare_colour":
-                            case "light_shaft_colour":
-                            case "initial_colour":
-                            case "near_colour":
-                            case "far_colour":
-                            case "colour":
-                            case "Colour":
-                                parameterGUI = new GUI_VectorVariant_Colour();
-                                ((GUI_VectorVariant_Colour)parameterGUI).PopulateUI((cVector3)this_param, paramName);
-                                break;
-                            default:
-                                parameterGUI = new GUI_VectorDataType();
-                                ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, paramName);
-                                break;
-                        }
-                        break;
-                    case DataType.ENUM:
-                        parameterGUI = new GUI_EnumDataType();
-                        ParameterData defaultData = Content.Level.Commands.Utils.CreateDefaultParameterData(Entity, Composite, paramName);
-                        ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName, defaultData == null || (defaultData.dataType == DataType.ENUM && ((cEnum)defaultData).enumID == ShortGuid.Invalid));
-                        break;
-                    case DataType.RESOURCE:
-                        parameterGUI = new GUI_ResourceDataType();
-                        ((GUI_ResourceDataType)parameterGUI).PopulateUI(this, (cResource)this_param, paramName);
-                        break;
-                    case DataType.SPLINE:
-                        parameterGUI = new GUI_SplineDataType(_entity);
-                        ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, paramName);
-                        break;
+                    if (this_param.dataType != DataType.RESOURCE)
+                    {
+                        _entity.parameters[i].content = new cResource(null, ShortGuid.Invalid);
+                        this_param = _entity.parameters[i].content;
+                    }
+
+                    parameterGUI = new GUI_StringVariant_MappingSelect();
+                    ((GUI_StringVariant_MappingSelect)parameterGUI).PopulateUI((cResource)this_param);
                 }
+                else
+                {
+                    switch (this_param.dataType)
+                    {
+                        case DataType.TRANSFORM:
+                            parameterGUI = new GUI_TransformDataType();
+                            ((GUI_TransformDataType)parameterGUI).PopulateUI(_entity, (cTransform)this_param, paramName);
+                            break;
+                        case DataType.INTEGER:
+                            parameterGUI = new GUI_NumericDataType();
+                            ((GUI_NumericDataType)parameterGUI).PopulateUI_Int((cInteger)this_param, paramName);
+                            break;
+                        case DataType.ENUM_STRING:
+                            parameterGUI = new GUI_StringVariant_AssetDropdown();
+                            ((GUI_StringVariant_AssetDropdown)parameterGUI).PopulateUI((cEnumString)this_param, paramName, false); //TODO: allow type selection?
+                            break;
+                        case DataType.STRING:
+                            parameterGUI = new GUI_StringDataType();
+                            ((GUI_StringDataType)parameterGUI).PopulateUI((cString)this_param, paramName);
+                            break;
+                        case DataType.BOOL:
+                            parameterGUI = new GUI_BoolDataType();
+                            ((GUI_BoolDataType)parameterGUI).PopulateUI((cBool)this_param, paramName);
+                            break;
+                        case DataType.FLOAT:
+                            parameterGUI = new GUI_NumericDataType();
+                            ((GUI_NumericDataType)parameterGUI).PopulateUI_Float((cFloat)this_param, paramName);
+                            break;
+                        case DataType.VECTOR:
+                            //TODO: Should add a "colour" flag to handle this nicer.
+                            switch (paramName)
+                            {
+                                case "AMBIENT_LIGHTING_COLOUR":
+                                case "COLOUR_TINT_START":
+                                case "COLOUR_TINT_MID":
+                                case "COLOUR_TINT_END":
+                                case "COLOUR_TINT":
+                                case "COLOUR_TINT_OUTER":
+                                case "DEPTH_INTERSECT_COLOUR_VALUE":
+                                case "DEPTH_INTERSECT_INITIAL_COLOUR":
+                                case "DEPTH_INTERSECT_MIDPOINT_COLOUR":
+                                case "DEPTH_INTERSECT_END_COLOUR":
+                                case "DEPTH_FOG_INITIAL_COLOUR":
+                                case "DEPTH_FOG_MIDPOINT_COLOUR":
+                                case "DEPTH_FOG_END_COLOUR":
+                                case "ColourFactor":
+                                case "lens_flare_colour":
+                                case "light_shaft_colour":
+                                case "initial_colour":
+                                case "near_colour":
+                                case "far_colour":
+                                case "colour":
+                                case "Colour":
+                                    parameterGUI = new GUI_VectorVariant_Colour();
+                                    ((GUI_VectorVariant_Colour)parameterGUI).PopulateUI((cVector3)this_param, paramName);
+                                    break;
+                                default:
+                                    parameterGUI = new GUI_VectorDataType();
+                                    ((GUI_VectorDataType)parameterGUI).PopulateUI((cVector3)this_param, paramName);
+                                    break;
+                            }
+                            break;
+                        case DataType.ENUM:
+                            parameterGUI = new GUI_EnumDataType();
+                            ParameterData defaultData = Content.Level.Commands.Utils.CreateDefaultParameterData(Entity, Composite, paramName);
+                            ((GUI_EnumDataType)parameterGUI).PopulateUI((cEnum)this_param, paramName, defaultData == null || (defaultData.dataType == DataType.ENUM && ((cEnum)defaultData).enumID == ShortGuid.Invalid));
+                            break;
+                        case DataType.RESOURCE:
+                            parameterGUI = new GUI_ResourceDataType();
+                            ((GUI_ResourceDataType)parameterGUI).PopulateUI(this, (cResource)this_param, paramName);
+                            break;
+                        case DataType.SPLINE:
+                            parameterGUI = new GUI_SplineDataType(_entity);
+                            ((GUI_SplineDataType)parameterGUI).PopulateUI((cSpline)this_param, paramName);
+                            break;
+                    }
+                }
+
                 parameterGUI.Parameter = _entity.parameters[i];
                 parameterGUI.OnDeleted += OnDeleteParam;
                 parameterGUI.Location = new Point(15, current_ui_offset);

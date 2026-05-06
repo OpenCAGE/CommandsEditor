@@ -1,4 +1,4 @@
-namespace CommandsEditor
+﻿namespace CommandsEditor
 {
     partial class AddOrEditLink
     {
@@ -213,7 +213,7 @@ namespace CommandsEditor
             this.Controls.Add(this.save_pin);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(1500, 416);
             this.MinimumSize = new System.Drawing.Size(500, 416);

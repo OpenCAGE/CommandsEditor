@@ -41,7 +41,7 @@
             this.showLinkedOverrides = new System.Windows.Forms.Button();
             this.showLinkedTriggerSequences = new System.Windows.Forms.Button();
             this.showLinkedCageAnimations = new System.Windows.Forms.Button();
-            this.entityList = new GroupedListView();
+            this.entityList = new System.Windows.Forms.ListView();
             this.EntityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.EntityType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.entityListIcons = new System.Windows.Forms.ImageList(this.components);
@@ -225,7 +225,7 @@
             this.Controls.Add(this.showLinkedProxies);
             this.Controls.Add(this.jumpToEntity);
             this.Controls.Add(this.label);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "ShowCrossRefs";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Entity References";

@@ -1,6 +1,8 @@
 using CATHODE.Scripting;
 using CathodeLib;
 using CommandsEditor.DockPanels;
+using CommandsEditor.Popups.Base;
+using OpenCAGE;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,28 +16,25 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace CommandsEditor.Popups
 {
-    public partial class SelectLevel : Form
+    public partial class SelectLevel : BaseWindow
     {
         public Action<string> OnLevelSelected;
 
-        public SelectLevel()
+        public SelectLevel() : base()
         {
             InitializeComponent();
-
-            env_list.BeginUpdate();
-            env_list.Items.AddRange(Level.GetLevels(SharedData.pathToAI).ToArray());
-            env_list.EndUpdate();
-
-            if (env_list.Items.Contains("PRODUCTION/FRONTEND")) 
-                env_list.SelectedItem = "PRODUCTION/FRONTEND";
-            else 
-                env_list.SelectedIndex = 0;
+            EditorUtils.PopulateLevelDropdown(env_list);
         }
 
         private void load_commands_pak_Click(object sender, EventArgs e)
         {
             OnLevelSelected?.Invoke(env_list.SelectedItem.ToString());
             this.Close();
+        }
+
+        private void env_list_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SettingsManager.SetString("OPT_LoadToMap", env_list.Items[env_list.SelectedIndex].ToString());
         }
     }
 }

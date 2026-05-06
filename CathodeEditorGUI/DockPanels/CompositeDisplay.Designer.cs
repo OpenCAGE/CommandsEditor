@@ -1,4 +1,4 @@
-namespace CommandsEditor.DockPanels
+﻿namespace CommandsEditor.DockPanels
 {
     partial class CompositeDisplay
     {
@@ -45,6 +45,7 @@ namespace CommandsEditor.DockPanels
             this.deleteComposite = new System.Windows.Forms.ToolStripButton();
             this.createFlowgraph = new System.Windows.Forms.ToolStripButton();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.vS2015DarkTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme();
             this.vS2015BlueTheme1 = new WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -298,7 +299,7 @@ namespace CommandsEditor.DockPanels
             this.Controls.Add(this.goBackOnPath);
             this.Controls.Add(this.toolStrip1);
             this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "CompositeDisplay";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
             this.TabPageContextMenuStrip = this.contextMenuStrip1;
@@ -316,6 +317,7 @@ namespace CommandsEditor.DockPanels
         private System.Windows.Forms.ToolStripButton findUses;
         private System.Windows.Forms.ToolStripButton deleteComposite;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
+        private WeifenLuo.WinFormsUI.Docking.VS2015DarkTheme vS2015DarkTheme1;
         private WeifenLuo.WinFormsUI.Docking.VS2015BlueTheme vS2015BlueTheme1;
         private System.Windows.Forms.ToolStripButton deleteCheckedEntities;
         private System.Windows.Forms.ToolStripButton exportComposite;

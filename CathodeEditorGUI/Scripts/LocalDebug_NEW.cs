@@ -7,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using static CATHODE.Movers.MOVER_DESCRIPTOR;
 
 namespace CommandsEditor.Scripts
 {
@@ -16,29 +18,114 @@ namespace CommandsEditor.Scripts
 
     public static class LocalDebug_NEW
     {
-        //Proof of concept of removing all instanced data from a level, populating the level with only Commands (excluding collisions)
-        public static void StripInstancedData(string pathToLevel, Global global)
+        public static void TestConstantData(string aiPath, string level)
         {
-            Level level = new Level(pathToLevel, global);
+            Level lvl = Utilities.LoadLevel(aiPath, level);
+
+            foreach (var mvr in lvl.Movers.Entries)
+            {
+                if (mvr.RenderableElements.Count > 0)
+                {
+                     Console.WriteLine("Model: " + lvl.Models.FindModel(mvr.RenderableElements[0].Model)?.Name);
+                     Console.WriteLine("Material: " + mvr.RenderableElements[0].Material?.Name);
+                }
+
+                switch (mvr.GetRenderableType())
+                {
+                    case RenderableInstanceType.CHARACTER:
+                        {
+                            //gpu stuff is set at runtime based on character info
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
+
+                            string gsdsdf = "";
+                        }
+                        break;
+                    case RenderableInstanceType.DYNAMICFX:
+                    case RenderableInstanceType.DYNAMICFX_UNIQUE_MAT:
+                        {
+                            {
+                                //For CPU particles
+                                var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.DYNAMIC_FX_GPU_CONSTANTS>();
+                                var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.DYNAMIC_PFX_PARAMS>();
+                            }
+                            {
+                                //For GPU particles
+                                var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.PARTICLE_GPU_CONSTANTS>();
+                                var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.PARTICLE_PARAMS>();
+                            }
+
+                            string gsdsdf = "";
+                        }
+                        break;
+                    case RenderableInstanceType.ENVIRONMENT_EXTRA:
+                    case RenderableInstanceType.ENVIRONMENT:
+                        {
+                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.ENVIRONMENT_GPU_CONSTANTS>();
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
+                        }
+                        break;
+                    case RenderableInstanceType.FOGSPHERE:
+                        {
+                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.FOGSPHERE_GPU_CONSTANTS>();
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
+
+                            string fgsdfd = "";
+                        }
+                        break;
+                    case RenderableInstanceType.LIGHT:
+                        {
+                            var gpu_constants = mvr.GPUConstants.GetAs<Movers.MOVER_DESCRIPTOR.GPU_CONSTANTS.DEFERRED_GPU_CONSTANTS>();
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.DEFERRED_PARAMS>();
+
+                            string gsdsdf = "";
+                        }
+                        break;
+                    case RenderableInstanceType.MISC:
+                        {
+                            // gpu_constants can be any!!
+                            var cpu_constants = mvr.RenderConstants.GetAs<Movers.MOVER_DESCRIPTOR.RENDER_CONSTANTS.MODEL_PARAMS>(); // i think only first two arrays are used here. verify.
+
+                            string fgsdfd = "";
+                        }
+                        break;
+                    case RenderableInstanceType.PLANET:
+                        {
+                            //these are set at runtime
+                        }
+                        break;
+                }
+            }
+
+            foreach (var mat in lvl.Materials.Entries)
+            {
+                if (mat.Name.StartsWith("FOGSPHERE_"))
+                {
+                    Directory.CreateDirectory(mat.Name);
+                    File.WriteAllBytes(mat.Name + "\\vertex_shader.bin", mat.Shader.VertexShader);
+                    File.WriteAllBytes(mat.Name + "\\pixel_shader.bin", mat.Shader.PixelShader);
+                }
+            }
+        }
+
+        //Proof of concept of removing all instanced data from a level, populating the level with only Commands (excluding collisions)
+        public static void StripInstancedData(string pathToAI, string level)
+        {
+            Level lvl = Utilities.LoadLevel(pathToAI, level);
 
             //Clear out the movers - these are the instanced objects populated from offline data
-            level.Movers.Entries.Clear();
-            level.Movers.Save();
+            lvl.Movers.Entries.Clear();
+            lvl.Movers.Save();
 
             //Strip out radiosity data: this references instanced movers, so we need to get rid of it
-            File.WriteAllBytes(pathToLevel + "WORLD/RADIOSITY_COLLISION_MAPPING.BIN", new byte[4]);
-            File.WriteAllBytes(pathToLevel + "RENDERABLE/RADIOSITY_RUNTIME.BIN", new byte[0]);
-            File.Delete(pathToLevel + "RENDERABLE/RADIOSITY_INSTANCE_MAP.TXT");
-
-            //Strip out environment map pointers, these hook up to movers, so are now void
-            level.EnvironmentMaps.Entries.Clear();
-            level.EnvironmentMaps.Save();
+            File.WriteAllBytes(pathToAI + "/DATA/ENV/" + level + "/WORLD/RADIOSITY_COLLISION_MAPPING.BIN", new byte[4]);
+            File.WriteAllBytes(pathToAI + "/DATA/ENV/" + level + "/RENDERABLE/RADIOSITY_RUNTIME.BIN", new byte[0]);
+            File.Delete(pathToAI + "/DATA/ENV/" + level + "/RENDERABLE/RADIOSITY_INSTANCE_MAP.TXT");
 
             //Strip out light info, again, these point to movers, so get rid
-            level.Lights.Indexes.Clear();
-            level.Lights.Values.Clear();
+            lvl.Lights.Indexes.Clear();
+            lvl.Lights.Values.Clear();
 
-            level.Lights.Save();
+            lvl.Lights.Save();
         }
 
         /*

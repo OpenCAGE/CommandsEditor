@@ -44,7 +44,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button2 = new System.Windows.Forms.Button();
             this.moveDown = new System.Windows.Forms.Button();
-            this.entity_list = new GroupedListView();
+            this.entity_list = new System.Windows.Forms.ListView();
             this.funcHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.inheritHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.addNewTrigger = new System.Windows.Forms.Button();
@@ -414,7 +414,7 @@
             this.ClientSize = new System.Drawing.Size(1217, 695);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.button1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(2000, 2000);
             this.MinimumSize = new System.Drawing.Size(700, 690);

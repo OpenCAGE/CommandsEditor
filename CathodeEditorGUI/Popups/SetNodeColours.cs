@@ -1,4 +1,5 @@
-﻿using CommandsEditor.Properties;
+﻿using CommandsEditor.Popups.Base;
+using CommandsEditor.Properties;
 using OpenCAGE;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,9 @@ using System.Windows.Forms;
 
 namespace CommandsEditor
 {
-    public partial class SetNodeColours : Form
+    public partial class SetNodeColours : BaseWindow
     {
-        public SetNodeColours()
+        public SetNodeColours() : base()
         {
             InitializeComponent();
             UpdateColourPreviews();

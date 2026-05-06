@@ -70,9 +70,9 @@ namespace CommandsEditor.Popups.UserControls
             if (_selectedModelParent == null)
                 return;
 
-            Models.CS2.Component.LOD lod = Content.Level.Models.FindModelLODForSubmesh(_selectedModelParent); 
+            Models.CS2.Component.LOD lod = Content.Level.Models.FindModelLOD(_selectedModelParent); 
             //Models.CS2.Component component = Editor.resource.models.FindModelComponentForSubmesh(submesh);
-            Models.CS2 mesh = Content.Level.Models.FindModelForSubmesh(_selectedModelParent);
+            Models.CS2 mesh = Content.Level.Models.FindModel(_selectedModelParent);
 
             modelInfoTextbox.Text = mesh?.Name;
             if (lod.Name != "")
@@ -150,7 +150,7 @@ namespace CommandsEditor.Popups.UserControls
 
         public List<RenderableElements.Element> GetAsRenderableElements()
         {
-            Models.CS2.Component component = Content.Level.Models.FindModelComponentForSubmesh(_selectedModelParent);
+            Models.CS2.Component component = Content.Level.Models.FindModelComponent(_selectedModelParent);
             List<RenderableElements.Element> reds = component.ToRenderableElements();
             for (int i = 0; i < reds.Count; i++)
             {

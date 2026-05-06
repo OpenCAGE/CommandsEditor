@@ -1,4 +1,4 @@
-namespace CommandsEditor
+﻿namespace CommandsEditor
 {
     partial class Flowgraph
     {
@@ -346,7 +346,7 @@ namespace CommandsEditor
             this.CloseButtonVisible = false;
             this.Controls.Add(this.stNodeEditor1);
             this.DoubleBuffered = true;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "Flowgraph";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -390,4 +390,5 @@ namespace CommandsEditor
         private System.Windows.Forms.ToolStripMenuItem clearDelayToolStripMenuItem;
     }
 }
+
 

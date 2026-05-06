@@ -95,7 +95,7 @@ namespace CommandsEditor.DockPanels
             this.entity_search_box.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.entity_search_box.Location = new System.Drawing.Point(0, 0);
             this.entity_search_box.Name = "entity_search_box";
-            this.entity_search_box.Size = new System.Drawing.Size(282, 20);
+            this.entity_search_box.Size = new System.Drawing.Size(262, 20);
             this.entity_search_box.TabIndex = 159;
             this.entity_search_box.KeyDown += new System.Windows.Forms.KeyEventHandler(this.entity_search_box_KeyDown);
             // 
@@ -103,7 +103,7 @@ namespace CommandsEditor.DockPanels
             // 
             this.entity_search_btn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.entity_search_btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.entity_search_btn.Location = new System.Drawing.Point(281, 0);
+            this.entity_search_btn.Location = new System.Drawing.Point(261, 0);
             this.entity_search_btn.Name = "entity_search_btn";
             this.entity_search_btn.Size = new System.Drawing.Size(63, 20);
             this.entity_search_btn.TabIndex = 158;
@@ -122,7 +122,7 @@ namespace CommandsEditor.DockPanels
             this.listView1.Location = new System.Drawing.Point(0, 19);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(1156, 687);
+            this.listView1.Size = new System.Drawing.Size(1175, 687);
             this.listView1.SmallImageList = this.FileBrowserImageListSmall;
             this.listView1.TabIndex = 179;
             this.listView1.UseCompatibleStateImageBehavior = false;
@@ -250,7 +250,7 @@ namespace CommandsEditor.DockPanels
             this.treeView1.Location = new System.Drawing.Point(0, 19);
             this.treeView1.Name = "treeView1";
             this.treeView1.SelectedImageIndex = 0;
-            this.treeView1.Size = new System.Drawing.Size(344, 687);
+            this.treeView1.Size = new System.Drawing.Size(324, 687);
             this.treeView1.TabIndex = 180;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FileTree_MouseDown);
@@ -271,7 +271,7 @@ namespace CommandsEditor.DockPanels
             this.pathDisplay.Location = new System.Drawing.Point(62, 0);
             this.pathDisplay.Name = "pathDisplay";
             this.pathDisplay.ReadOnly = true;
-            this.pathDisplay.Size = new System.Drawing.Size(1094, 20);
+            this.pathDisplay.Size = new System.Drawing.Size(1113, 20);
             this.pathDisplay.TabIndex = 181;
             // 
             // goBackOnPath
@@ -305,7 +305,7 @@ namespace CommandsEditor.DockPanels
             this.splitContainer1.Panel2.Controls.Add(this.pathDisplay);
             this.splitContainer1.Panel2.Controls.Add(this.listView1);
             this.splitContainer1.Size = new System.Drawing.Size(1504, 706);
-            this.splitContainer1.SplitterDistance = 344;
+            this.splitContainer1.SplitterDistance = 324;
             this.splitContainer1.TabIndex = 183;
             // 
             // toolStrip1
@@ -345,7 +345,7 @@ namespace CommandsEditor.DockPanels
             this.findFunctionUses.Image = ((System.Drawing.Image)(resources.GetObject("findFunctionUses.Image")));
             this.findFunctionUses.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.findFunctionUses.Name = "findFunctionUses";
-            this.findFunctionUses.Size = new System.Drawing.Size(155, 22);
+            this.findFunctionUses.Size = new System.Drawing.Size(156, 22);
             this.findFunctionUses.Text = "Search By Function Type";
             this.findFunctionUses.Click += new System.EventHandler(this.findFunctionUses_Click);
             // 
@@ -382,7 +382,7 @@ namespace CommandsEditor.DockPanels
             // 
             this.toolStripMenuItem2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem2.Image")));
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(159, 22);
             this.toolStripMenuItem2.Text = "New Composite";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.createCompositeViaTreeView_Click);
             // 
@@ -390,7 +390,7 @@ namespace CommandsEditor.DockPanels
             // 
             this.toolStripMenuItem3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItem3.Image")));
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(159, 22);
             this.toolStripMenuItem3.Text = "New Folder";
             this.toolStripMenuItem3.Click += new System.EventHandler(this.createFolderViaTreeView_Click);
             // 
@@ -425,7 +425,7 @@ namespace CommandsEditor.DockPanels
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.splitContainer1);
             this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "CommandsDisplay";
             this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide;
             this.Text = "Composites";

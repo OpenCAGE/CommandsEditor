@@ -1,6 +1,7 @@
 ﻿using CATHODE;
 using CATHODE.Scripting;
 using CATHODE.Scripting.Internal;
+using DarkModeForms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,16 +19,25 @@ namespace CommandsEditor.Popups.Base
         protected LevelContent Content => Singleton.Editor?.CommandsDisplay?.Content;
 
         private WindowClosesOn _closesOn;
+        private DarkModeCS _dm;
 
-        [Obsolete("Designer only", true)]
         public BaseWindow()
         {
             InitializeComponent();
+#if USE_DARK_MODE
+            _dm = new DarkModeCS(this);
+#endif
+
+            this.BringToFront();
+            this.Focus();
         }
 
         public BaseWindow(WindowClosesOn config)
         {
             InitializeComponent();
+#if USE_DARK_MODE
+            _dm = new DarkModeCS(this);
+#endif
 
             _closesOn = config;
 

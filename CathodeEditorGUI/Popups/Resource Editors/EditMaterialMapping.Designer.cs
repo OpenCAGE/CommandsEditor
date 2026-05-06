@@ -38,6 +38,8 @@ namespace CommandsEditor
             this.treeViewButtonPanel = new System.Windows.Forms.Panel();
             this.addNewSetButton = new System.Windows.Forms.Button();
             this.buttonPanel = new System.Windows.Forms.Panel();
+            this.selectFromMaterialButton = new System.Windows.Forms.Button();
+            this.selectToMaterialButton = new System.Windows.Forms.Button();
             this.addMappingButton = new System.Windows.Forms.Button();
             this.removeMappingButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -140,6 +142,8 @@ namespace CommandsEditor
             // 
             // buttonPanel
             // 
+            this.buttonPanel.Controls.Add(this.selectFromMaterialButton);
+            this.buttonPanel.Controls.Add(this.selectToMaterialButton);
             this.buttonPanel.Controls.Add(this.addMappingButton);
             this.buttonPanel.Controls.Add(this.removeMappingButton);
             this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -147,6 +151,28 @@ namespace CommandsEditor
             this.buttonPanel.Name = "buttonPanel";
             this.buttonPanel.Size = new System.Drawing.Size(704, 30);
             this.buttonPanel.TabIndex = 2;
+            // 
+            // selectFromMaterialButton
+            // 
+            this.selectFromMaterialButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.selectFromMaterialButton.Location = new System.Drawing.Point(3, 3);
+            this.selectFromMaterialButton.Name = "selectFromMaterialButton";
+            this.selectFromMaterialButton.Size = new System.Drawing.Size(100, 24);
+            this.selectFromMaterialButton.TabIndex = 2;
+            this.selectFromMaterialButton.Text = "Edit From";
+            this.selectFromMaterialButton.UseVisualStyleBackColor = true;
+            this.selectFromMaterialButton.Click += new System.EventHandler(this.selectFromMaterialButton_Click);
+            // 
+            // selectToMaterialButton
+            // 
+            this.selectToMaterialButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.selectToMaterialButton.Location = new System.Drawing.Point(109, 3);
+            this.selectToMaterialButton.Name = "selectToMaterialButton";
+            this.selectToMaterialButton.Size = new System.Drawing.Size(100, 24);
+            this.selectToMaterialButton.TabIndex = 3;
+            this.selectToMaterialButton.Text = "Edit To";
+            this.selectToMaterialButton.UseVisualStyleBackColor = true;
+            this.selectToMaterialButton.Click += new System.EventHandler(this.selectToMaterialButton_Click);
             // 
             // addMappingButton
             // 
@@ -176,7 +202,7 @@ namespace CommandsEditor
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(985, 450);
             this.Controls.Add(this.splitContainer);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
             this.Name = "EditMaterialMapping";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Edit Material Mapping";
@@ -203,6 +229,9 @@ namespace CommandsEditor
         private System.Windows.Forms.Button removeMappingButton;
         private System.Windows.Forms.Button addNewSetButton;
         private System.Windows.Forms.Panel treeViewButtonPanel;
+        private System.Windows.Forms.Button selectFromMaterialButton;
+        private System.Windows.Forms.Button selectToMaterialButton;
     }
 }
+
 

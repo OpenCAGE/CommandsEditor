@@ -36,14 +36,14 @@
             this.overwrite = new System.Windows.Forms.CheckBox();
             this.recurse = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // export
             // 
-            this.export.Location = new System.Drawing.Point(324, 71);
+            this.export.Location = new System.Drawing.Point(486, 109);
+            this.export.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.export.Name = "export";
-            this.export.Size = new System.Drawing.Size(113, 23);
+            this.export.Size = new System.Drawing.Size(170, 35);
             this.export.TabIndex = 5;
             this.export.Text = "Export";
             this.toolTip1.SetToolTip(this.export, "Export composite to selected level.");
@@ -54,17 +54,19 @@
             // 
             this.levelList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.levelList.FormattingEnabled = true;
-            this.levelList.Location = new System.Drawing.Point(15, 25);
+            this.levelList.Location = new System.Drawing.Point(22, 38);
+            this.levelList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.levelList.Name = "levelList";
-            this.levelList.Size = new System.Drawing.Size(422, 21);
+            this.levelList.Size = new System.Drawing.Size(631, 28);
             this.levelList.TabIndex = 6;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(18, 14);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(117, 13);
+            this.label1.Size = new System.Drawing.Size(172, 20);
             this.label1.TabIndex = 7;
             this.label1.Text = "Port composite to level:";
             // 
@@ -73,9 +75,10 @@
             this.overwrite.AutoSize = true;
             this.overwrite.Checked = true;
             this.overwrite.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.overwrite.Location = new System.Drawing.Point(15, 54);
+            this.overwrite.Location = new System.Drawing.Point(22, 83);
+            this.overwrite.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.overwrite.Name = "overwrite";
-            this.overwrite.Size = new System.Drawing.Size(219, 17);
+            this.overwrite.Size = new System.Drawing.Size(318, 24);
             this.overwrite.TabIndex = 8;
             this.overwrite.Text = "Overwrite existing destination composites";
             this.toolTip1.SetToolTip(this.overwrite, "If checked: when composites are copied they will overwrite any by the same ID in " +
@@ -87,37 +90,29 @@
             this.recurse.AutoSize = true;
             this.recurse.Checked = true;
             this.recurse.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.recurse.Location = new System.Drawing.Point(15, 77);
+            this.recurse.Location = new System.Drawing.Point(22, 118);
+            this.recurse.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.recurse.Name = "recurse";
-            this.recurse.Size = new System.Drawing.Size(257, 17);
+            this.recurse.Size = new System.Drawing.Size(375, 24);
             this.recurse.TabIndex = 9;
             this.recurse.Text = "Copy all composites referenced by this composite";
             this.toolTip1.SetToolTip(this.recurse, "If checked: composites that are instanced within the exported composite will also" +
         " be copied.");
             this.recurse.UseVisualStyleBackColor = true;
             // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Location = new System.Drawing.Point(15, 104);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(422, 56);
-            this.richTextBox1.TabIndex = 10;
-            this.richTextBox1.Text = "";
-            // 
             // ExportComposite
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 172);
-            this.Controls.Add(this.richTextBox1);
+            this.ClientSize = new System.Drawing.Size(674, 164);
             this.Controls.Add(this.recurse);
             this.Controls.Add(this.overwrite);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.levelList);
             this.Controls.Add(this.export);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::CommandsEditor.SharedFormIcon.Icon;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.Name = "ExportComposite";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -135,6 +130,5 @@
         private System.Windows.Forms.CheckBox overwrite;
         private System.Windows.Forms.CheckBox recurse;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

@@ -1,10 +1,14 @@
 using CathodeLib;
+using CommandsEditor.Popups.Base;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,12 +18,12 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CommandsEditor
 {
-    public partial class ProgressUI : Form
+    public partial class ProgressUI : BaseWindow
     {
         private int _counter = 0;
         private Level _level;
 
-        public ProgressUI()
+        public ProgressUI() : base()
         {
             InitializeComponent();
 
@@ -31,11 +35,7 @@ namespace CommandsEditor
 
         private void ProgressUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                e.Cancel = true;
-                return;
-            }
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress, Singleton.Editor.Handle);
 
             this.FormClosing -= ProgressUI_FormClosing;
 
@@ -63,15 +63,19 @@ namespace CommandsEditor
 
             this.Text = (loading ? "Loading " : "Saving ") + level.Name + "...";
 
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate, Singleton.Editor.Handle);
+
             if (progressBar1.InvokeRequired)
             {
                 progressBar1.BeginInvoke(new Action(() => {
+                    progressBar1.Style = ProgressBarStyle.Continuous;
                     progressBar1.Value = 0;
                     progressBar1.Refresh();
                 }));
             }
             else
             {
+                progressBar1.Style = ProgressBarStyle.Continuous;
                 progressBar1.Value = 0;
                 progressBar1.Refresh();
             }
@@ -84,11 +88,26 @@ namespace CommandsEditor
             this.Show();
         }
 
+        public void ShowTransferring(string titlebar)
+        {
+            this.Text = titlebar;
+
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate, this.Handle);
+
+            progressBar1.Style = ProgressBarStyle.Marquee;
+            progressBar1.Refresh();
+
+            this.Show();
+        }
+
+        public void DoRefresh()
+        {
+            progressBar1.Refresh();
+        }
+
         private void UpdateProgressBar()
         {
             int currentCount = Interlocked.Increment(ref _counter);
-            Debug.Log("Progress Bar", "Counter set to " + currentCount);
-
             int progress = Math.Min(100, (currentCount * 100) / Level.NumberOfTicks);
             if (progressBar1.InvokeRequired)
             {
@@ -99,7 +118,6 @@ namespace CommandsEditor
                         {
                             progressBar1.Value = progress;
                             progressBar1.Refresh();
-                            Debug.Log("Progress Bar", "Setting bar to " + progress.ToString() + "%!");
                         }
                     }));
                 }
@@ -110,7 +128,6 @@ namespace CommandsEditor
                 {
                     progressBar1.Value = progress;
                     progressBar1.Refresh();
-                    Debug.Log("Progress Bar", "Setting bar to " + progress.ToString() + "%!");
                 }
             }
         }
